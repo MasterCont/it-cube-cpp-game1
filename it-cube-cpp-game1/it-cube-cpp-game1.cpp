@@ -2,18 +2,18 @@
 
 using namespace std;
 
-string hero = " P ";
-int hero_x = 2, hero_y = 2;
+string hero = " P "; // Создаём интерфейс игрока
+int hero_x = 2, hero_y = 2; // Прописываем спавн игрока на координатах по x и y
 
-string loot_item = " * ";
-int li_y = 4, li_x = 4;
+string loot_item = " * "; // Создаём интерфейс действия
+int li_y = 4, li_x = 4; // Прописываем спавн действия на координатах по x и y
 
 string hero_invent[] = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 " };
 int hero_inv_i = 0;
 
-int map_number = 0;
+int map_number = 0; // Указываем, что по умолчанию загружается первая (нулевая по программе) карта
 
-string Map[6][6] = {
+string Map[6][6] = { // Создаём карту 1
         {" # ", " # ", " # ", " # ", " # ", " # "},
         {" # ", " . ", " . ", " . ", " . ", " # "},
         {" # ", " . ", " . ", " . ", " . ", " # "},
@@ -21,7 +21,7 @@ string Map[6][6] = {
         {" # ", " . ", " . ", " . ", " . ", " # "},
         {" # ", " # ", " # ", " # ", " # ", " # "}
 };
-string Map_2[6][6] = {
+string Map_2[6][6] = { // Создаём карту 2
         {" # ", " # ", " # ", "   ", "   ", " # "},
         {" # ", " . ", " . ", " . ", " . ", " # "},
         {" # ", " . ", " . ", " . ", " . ", " # "},
@@ -30,7 +30,7 @@ string Map_2[6][6] = {
         {" # ", " # ", " # ", " # ", "   ", "   "}
 };
 
-string Map_3[6][6] = {
+string Map_3[6][6] = { // Создаём карту 3
         {" # ", " # ", " # ", "   ", "   ", " # "},
         {"   ", " . ", " . ", " . ", " . ", " # "},
         {"   ", " . ", " . ", " . ", " . ", " # "},
@@ -38,15 +38,15 @@ string Map_3[6][6] = {
         {" # ", " . ", " . ", " . ", " . ", " # "},
         {" # ", " # ", " # ", " # ", "   ", " # "}
 };
-void Move(char m) {
+void static Move(char m) { // Создаём функцию, отвечающую за передвижение игрока
     if (m == 'e') {
         // hero_invent[hero_inv_i] = loot_item;
         // ++hero_inv_i;
-        if (map_number == 0) { map_number = 1; }
+        if (map_number == 0) { map_number = 1; } // Переключение на следующую локацию
         else if (map_number == 1) { map_number = 2; }
-        else if (map_number == 2) { map_number = 0; }
+        else if (map_number == 2) { map_number = 0; } // Переключение на первую локацию, потому что тут последняя локация
     }
-    if (map_number == 0) {
+    if (map_number == 0) { // Передвижение персонажа при нулевой карте
         if (m == 'w' && (Map[hero_y - 1][hero_x] != " # ")) {
             Map[hero_y][hero_x] = " . "; Map[--hero_y][hero_x] = hero;
         }
@@ -60,7 +60,7 @@ void Move(char m) {
             Map[hero_y][hero_x] = " . "; Map[hero_y][++hero_x] = hero;
         }
     }
-    if (map_number == 1) {
+    if (map_number == 1) { // Передвижение персонажа при первой карте
         if (m == 'w' && (Map_2[hero_y - 1][hero_x] != " # ")) {
             Map_2[hero_y][hero_x] = " . "; Map_2[--hero_y][hero_x] = hero;
         }
@@ -74,7 +74,7 @@ void Move(char m) {
             Map_2[hero_y][hero_x] = " . "; Map_2[hero_y][++hero_x] = hero;
         }
     }
-    if (map_number == 2) {
+    if (map_number == 2) { // Передвижение персонажа при второй карте
         if (m == 'w' && (Map_2[hero_y - 1][hero_x] != " # ")) {
             Map_2[hero_y][hero_x] = " . "; Map_2[--hero_y][hero_x] = hero;
         }
@@ -92,7 +92,7 @@ void Move(char m) {
 
 
 
-void UI_Map() {
+void static UI_Map() { // Функция, которая выводит интерфейс управления игрой
     if (li_x == hero_x && li_y == hero_y) {
         cout << " # e - Go       # " << endl;
     }
@@ -105,7 +105,7 @@ void UI_Map() {
     cout << " #  #  #  #  #  # " << endl;
 }
 
-void Render_map() {
+void static Render_map() { // Функция, которая обновляет интерфейс карты при изменении действий в игре
     if (map_number == 0) {
         for (auto& i : Map) {
             for (int j = 0; j < size(i); j++) {
@@ -139,18 +139,18 @@ void Render_map() {
 //     cout << endl;
 // }
 
-int main() {
-    map_number = 0;
-    Map[hero_y][hero_x] = hero;
-    Map[li_y][li_x] = loot_item;
-    while (true) {
-        system("cls");
-        Render_map();
+int main() { // Главная функция
+    map_number = 0; // При запуске игры устанавливаем первую (нулевую в программе) карту
+    Map[hero_y][hero_x] = hero; // Указываем, что в этой координате спанится игрок и выводим его
+    Map[li_y][li_x] = loot_item; // Указываем, что в этой координате спанится действие и выводим его
+    while (true) { // Запускаем бесконечный цикл, чтобы программа не останавливалась, если произведётся действие
+        system("cls"); // Обновляем интрфейс терминала, (если оно вообще у вас будет работать) чтобы не было большого вывода символов
+        Render_map(); // Обновляем интрефейс карты
         // Render_Invert();
-        UI_Map();
-        char ch;
-        cin >> ch;
-        if (ch == '0') { break; }
-        Move(ch);
+        UI_Map(); // Обновляем интрефейс управления
+        char ch; 
+        cin >> ch; // Ввод действия игрока
+        if (ch == '0') { break; } // Остановка программы, если указан прописанный символ в ковычках
+        Move(ch); // Совершаем некоторое действие, указанное от игрока
     }
 }
