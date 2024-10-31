@@ -144,6 +144,7 @@ int main() {
     Map[hero_y][hero_x] = hero;
     Map[li_y][li_x] = loot_item;
     while (true) {
+        system("cls");
         Render_map();
         // Render_Invert();
         UI_Map();
