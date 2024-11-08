@@ -4,7 +4,7 @@
 using namespace std;
 
 // Создаём некоторую информацию о нашем приложении
-string version = "0.0.3";
+string version = "0.0.4";
 string name = "@it_cube_cpp_game1";
 
 // Создаём игрока
@@ -56,37 +56,47 @@ string Maps[][maps_size][maps_size]{
     
 };
 
+
 void static Move(char m) { // Создаём функцию, отвечающую за передвижение игрока
     if (m == 'e') {
         // player_invent[player_inv_i] = loot_item;
-        // ++player_inv_i;
-        if (map_number == 0) { map_number = 1; } // Переключение на следующую локацию
-        else if (map_number == 1) { map_number = 2; }
-        else if (map_number == 2) { map_number = 0; } // Переключение на первую локацию, потому что тут последняя локация
+        // ++player_inv_i; 
+        Maps[map_number][player_y][player_x] = " . "; // Очищаем положение игрока на исходной карте
+        map_number == size(Maps) - 1 ? map_number = 0 : map_number++; // Переключение на следующую локацию
+        Maps[map_number][player_y][player_x] = " P "; // Спавним игрока на новой карте
     }
 
-    if (m == 'w' && (Maps[map_number][player_y - 1][player_x] != " # ")) {
+    else if (m == 'w' && (Maps[map_number][player_y - 1][player_x] != " # ")) {
         Maps[map_number][player_y][player_x] = " . "; Maps[map_number][--player_y][player_x] = player;
     }
-    if (m == 's' && (Maps[map_number][player_y + 1][player_x] != " # ")) {
+    else if (m == 's' && (Maps[map_number][player_y + 1][player_x] != " # ")) {
         Maps[map_number][player_y][player_x] = " . "; Maps[map_number][++player_y][player_x] = player;
     }
-    if (m == 'a' && (Maps[map_number][player_y][player_x - 1] != " # ")) {
+    else if (m == 'a' && (Maps[map_number][player_y][player_x - 1] != " # ")) {
         Maps[map_number][player_y][player_x] = " . "; Maps[map_number][player_y][--player_x] = player;
     }
-    if (m == 'd' && (Maps[map_number][player_y][player_x + 1] != " # ")) {
+    else if (m == 'd' && (Maps[map_number][player_y][player_x + 1] != " # ")) {
         Maps[map_number][player_y][player_x] = " . "; Maps[map_number][player_y][++player_x] = player;
     }
 }
 
-string interface[][4] = {
+string interface[][4] = { // Создаём переменную, в которой храним информацию игрока для вывода в терминал
      {" |#", " # ", " # ", " #  #  # #"},
-     {" | Имя: "+ player_name +"    ", " # "},
-     {" | Класс: "+ player_class +"  ", " # "},
-     {" | HP: "+ to_string(player_hp) +"        ", " # "},
-     {" | DMG: "+ to_string(player_dmg) +"        ", " # "},
+     {},
+     {},
+     {},
+     {},
+     {},
      {" |#", " # ", " # ", " #  #  # #"}
 };
+
+void static UI_Update() { // Функцией обновляем данные в переменную interface
+    interface[1][0] = " | Имя: " + player_name + "    ", " # ";
+    interface[2][0] = " | Класс: " + player_class + "  ", " # ";
+    interface[3][0] = " | HP: " + to_string(player_hp) + "        ", " # ";
+    interface[4][0] = " | DMG: " + to_string(player_dmg) + "        ", " # ";
+    interface[5][0] = " | MAP: #" + to_string(map_number);
+}
 
 
 
@@ -102,6 +112,7 @@ void static UI_Map() { // Функция, которая выводит инте
 }
 
 void static Render_map() { // Функция, которая обновляет интерфейс карты при изменении действий в игре
+    UI_Update(); // Обновляем интерфейс информации игрока
     for (int i = 0; i < size(Maps[map_number]); i++) {
         for (int j = 0; j < size(Maps[map_number][i]); j++) { // Вывод карты игрока
              cout << Maps[map_number][i][j];
@@ -112,6 +123,7 @@ void static Render_map() { // Функция, которая обновляет 
         cout << endl;
     }
 }
+
 
 int main() { // Главная функция
     setlocale(LC_ALL, "ru"); // Устанавливаем русский язык в консоли
@@ -128,9 +140,17 @@ int main() { // Главная функция
         Render_map(); // Обновляем интрефейс карты
         // Render_Invert();
         UI_Map(); // Обновляем интрефейс управления
-        char ch; 
-        cin >> ch; // Ввод действия игрока
+        char ch;
+        cin >> ch;
         if (ch == '0') { break; } // Остановка программы, если указан прописанный символ в ковычках
         Move(ch); // Совершаем некоторое действие, указанное от игрока
     }
 }
+
+//bool static getActionOnEnemyX(int hero_x, int hero_y, int enemy_x, int enemy_y) {
+//    return (enemy_y == hero_y && (enemy_x - 1 == hero_x || enemy_x + 1 == hero_x));
+//}
+//
+//bool static getActionOnEnemyY(int hero_x, int hero_y, int enemy_x, int enemy_y) {
+//    return (enemy_x == hero_x && (enemy_y - 1 == hero_y || enemy_y + 1 == hero_y));
+//}
