@@ -4,7 +4,7 @@
 using namespace std;
 
 // Создаём некоторую информацию о нашем приложении
-string version = "0.0.7";
+string version = "0.0.7.1";
 string name = "@it_cube_cpp_game1";
 bool debug = false; // если активна, то отображаем раскладку
 
@@ -233,8 +233,8 @@ int main() { // Главная функция
     map_number = 0; // При запуске игры устанавливаем первую (нулевую в программе) карту
     Maps[map_number][player.pos_y][player.pos_x] = designations.player; // Указываем, что в этой координате спанится игрок и выводим его
     Maps[map_number][spawn.li_pos_y][spawn.li_pos_x] = designations.loot_item; // Указываем, что в этой координате спанится действие и выводим его
-    Maps[map_number][enemy.pos_y][enemy.pos_x] = designations.enemy; // Указываем, что в этой координате будет спавниться моб
     while (true) { // Запускаем бесконечный цикл, чтобы программа не останавливалась, если произведётся действие
+        Maps[map_number][enemy.pos_y][enemy.pos_x] = designations.enemy; // Указываем, что в этой координате будет спавниться моб
         system("cls"); // Обновляем интрфейс терминала, (если оно вообще у вас будет работать) чтобы не было большого вывода символов
         Render_map(); // Обновляем интрефейс карты
         // Render_Invert();
