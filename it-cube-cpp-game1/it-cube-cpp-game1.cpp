@@ -66,7 +66,7 @@ bool fight = false;
 bool hero_moves = false;
 bool can_go = true;
 
-// не знаю,какая я то хрень связаная с боем
+// проверка на ходьбу игрока
 void Go_hero() {
     if (fight == false) { can_go = true; }
     else if (fight == true && hero_moves == true) { can_go = true; }
@@ -161,6 +161,53 @@ void UI_Map() {
         cout << " f_string: " << f_string << endl;
         cout << "x_true: " << x_true;
         cout << " y_true: " << y_true << endl;
+        cout << "enemy_x: " << enemy_x;
+        cout << " enemy_y: " << enemy_y << endl;
+        cout << "hero_x: " << hero_x;
+        cout << " hero_y: " << hero_y << endl;
+    }
+}
+
+bool Move_enemy0 = false;
+bool Move_enemy1 = false;
+
+//враг
+void Move_enemy() {
+    bool x_true = getActionOnEnemyX(hero_x, hero_y, enemy_x, enemy_y);
+    bool y_true = getActionOnEnemyY(hero_x, hero_y, enemy_x, enemy_y);
+    while (enemy_moves == true && fight_for_enemy == true && enemy_life == true) {
+        Move_enemy0 = true;
+        if (x_true || y_true) {
+            HP = HP - enemy_entity_DMG;
+            Life_all();// функция проверка на жизнь всех и игрока
+            enemy_moves = false;//переменная хода для моба
+            hero_moves = true;
+            Go_hero();// функция проверка на ходьбу игрока
+        }
+        else if (Map[map_number][hero_y][hero_x - 1] != " # ") {
+            Move_enemy1 = true;
+            Map[map_number][enemy_y][enemy_x] = Map[map_number][hero_y][hero_x - 1];
+            hero_moves = true;
+            Go_hero();// функция проверка на ходьбу игрока
+        }
+        else if (Map[map_number][hero_y][hero_x + 1] != " # ") {
+            Move_enemy1 = true;
+            Map[map_number][enemy_y][enemy_x] = Map[map_number][hero_y][hero_x + 1];
+            hero_moves = true;
+            Go_hero();// функция проверка на ходьбу игрока
+        }
+        else if (Map[map_number][hero_y][hero_x - 1] != " # ") {
+            Move_enemy1 = true;
+            Map[map_number][enemy_y][enemy_x] = Map[map_number][hero_y - 1][hero_x];
+            hero_moves = true;
+            Go_hero();// функция проверка на ходьбу игрока
+        }
+        else if (Map[map_number][hero_y][hero_x - 1] != " # ") {
+            Move_enemy1 = true;
+            Map[map_number][enemy_y][enemy_x] = Map[map_number][hero_y + 1][hero_x];
+            hero_moves = true;
+            Go_hero();// функция проверка на ходьбу игрока
+        }
     }
 }
 
@@ -183,42 +230,57 @@ void Move(char m) {
             fight = true;
             fight_for_enemy = true;
             enemy_moves = true;
+            Move_enemy();
             Go_hero();
         }
 
         //Ходьба
         if (m == 'w' && Map[map_number][hero_y - 1][hero_x] != " # " && Map[map_number][hero_y - 1][hero_x] != Map[map_number][enemy_y][enemy_x]) { //вверх
             Map[map_number][hero_y][hero_x] = " . "; Map[map_number][--hero_y][hero_x] = hero;
-            if (fight) { hero_moves = false;Go_hero(); }
+            if (fight && hero_moves) {
+            enemy_moves = true;//переменная хода для моба
+            Move_enemy();//помогает мобу ходить
+            hero_moves = false;
+            Go_hero();// функция проверка на ходьбу игрока
+            }
         }
         if (m == 's' && Map[map_number][hero_y + 1][hero_x] != " # " && Map[map_number][hero_y + 1][hero_x] != Map[map_number][enemy_y][enemy_x]) { //вниз
             Map[map_number][hero_y][hero_x] = " . "; Map[map_number][++hero_y][hero_x] = hero;
-            if (fight) { hero_moves = false;Go_hero(); }
+            if (fight && hero_moves) {
+            enemy_moves = true;//переменная хода для моба
+            Move_enemy();//помогает мобу ходить
+            hero_moves = false;
+            Go_hero();// функция проверка на ходьбу игрока
+            }
         }
         if (m == 'a' && Map[map_number][hero_y][hero_x - 1] != " # " && Map[map_number][hero_y][hero_x - 1] != Map[map_number][enemy_y][enemy_x]) { //влево
             Map[map_number][hero_y][hero_x] = " . "; Map[map_number][hero_y][--hero_x] = hero;
-            if (fight) { hero_moves = false;Go_hero(); }
+            if (fight && hero_moves) {
+            enemy_moves = true;//переменная хода для моба
+            Move_enemy();//помогает мобу ходить
+            hero_moves = false;
+            Go_hero();// функция проверка на ходьбу игрока
+            }
         }
         if (m == 'd' && Map[map_number][hero_y][hero_x + 1] != " # " && Map[map_number][hero_y][hero_x + 1] != Map[map_number][enemy_y][enemy_x]) { //вправо
             Map[map_number][hero_y][hero_x] = " . "; Map[map_number][hero_y][++hero_x] = hero;
-            if (fight) { hero_moves = false;Go_hero(); }
+            if (fight && hero_moves) {
+            enemy_moves = true;//переменная хода для моба
+            Move_enemy();//помогает мобу ходить
+            hero_moves = false;
+            Go_hero();// функция проверка на ходьбу игрока
+            }
         }
-        if (m == 'i') !debug ? debug = true : debug = false;
+        
+    }
+    
+    //кнопка для доп.инф.
+    if (m == 'i') {
+        if (debug == false) { debug = true; }
+        else{ debug = false; }
     }
 }
 
-void Move_enemy() {
-    bool x_true = getActionOnEnemyX(hero_x, hero_y, enemy_x, enemy_y);
-    bool y_true = getActionOnEnemyY(hero_x, hero_y, enemy_x, enemy_y);
-    if (enemy_moves == true && fight_for_enemy == true && enemy_life == true) {
-        if (x_true || y_true) {
-            HP = HP - enemy_entity_DMG;
-            Life_all();
-            hero_moves = true;
-            Go_hero();
-        }
-    }
-}
 
 // отображения инвентаря
 void Render_Invert() {
@@ -237,12 +299,15 @@ int main() {
     if (life == false) { return 0; }
     Map[map_number][hero_y][hero_x] = hero;
     Map[map_number][li_y][li_x] = loot_item;
+    Move_enemy();
     Map[map_number][enemy_y][enemy_x] = enemy_entity;
     while (true) {
         system("cls");
         Render_map();
         Render_Invert();
         UI_Map();
+        cout << "Move_enemy0:" << Move_enemy0 << endl;
+        cout << "Move_enemy1:" << Move_enemy1 << endl;
         cout << "Введите команду" << endl;
         char f;
         cin >> f;
