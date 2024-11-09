@@ -1,156 +1,250 @@
-﻿#include <iostream>
+﻿
+#include <iostream>
 #include <string>
-
 using namespace std;
 
-// Создаём некоторую информацию о нашем приложении
-string version = "0.0.4";
-string name = "@it_cube_cpp_game1";
+// массивы и переменные
+string name = "АКШЫЛ";
+string hero = " P ";
+bool life = true;
+int DMG = 2;
+int HP = 10;
+string class_hero = "Алкаш";
+int hero_x = 2, hero_y = 2;
 
-// Создаём игрока
-string player = " P "; // Создаём интерфейс игрока
-int player_x = 2, player_y = 2; // Прописываем спавн игрока на координатах по x и y
-int player_hp = 10; // Создаём хп игроку
-int player_dmg = 2;
-string player_name; // Создаём переменную, в котором запишем имя игрока
-string player_class = "@player_class_name"; // Создаём переменную, в котором записываем "класс" игрока
+string Map[][6][6]{
 
+{ // Map 0 - Создаём карту 1
+    {" # ", " # ", " # ", " # ", " # ", " # "},
+    {" # ", " . ", " . ", " . ", " . ", " # "},
+    {" # ", " . ", " . ", " . ", " . ", " # "},
+    {" # ", " . ", " . ", " . ", " . ", " # "},
+    {" # ", " . ", " . ", " . ", " . ", " # "},
+    {" # ", " # ", " # ", " # ", " # ", " # "}
+},
 
-string loot_item = " * "; // Создаём интерфейс действия
-int li_y = 4, li_x = 4; // Прописываем спавн действия на координатах по x и y
+{ // Map 1 - Создаём карту 2
+    {" + ", " + ", " + ", " + ", " + ", " + "},
+    {" # ", " . ", " . ", " . ", " . ", " # "},
+    {" # ", " . ", " . ", " . ", " . ", " # "},
+    {" # ", " . ", " . ", " . ", " . ", " # "},
+    {" # ", " . ", " . ", " . ", " . ", " # "},
+    {" # ", " # ", " # ", " # ", " # ", " # "}
+},
 
-string player_invent[] = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 " };
-int player_inv_i = 0;
-
-int map_number = 0; // Указываем, что по умолчанию загружается первая (нулевая по программе) карта
-
-const int maps_size = 6;
-string Maps[][maps_size][maps_size]{
-
-    { // Map 0 - Создаём карту 1
-        {" # ", " # ", " # ", " # ", " # ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " # ", " # ", " # ", " # ", " # "}
-    },
-
-    { // Map 1 - Создаём карту 2
-        {" # ", " # ", " # ", "   ", "   ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {"   ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", "   "},
-        {" # ", " # ", " # ", " # ", "   ", "   "}
-    },
-
-    { // Map 2 - Создаём карту 3
-        {" # ", " # ", " # ", "   ", "   ", " # "},
-        {"   ", " . ", " . ", " . ", " . ", " # "},
-        {"   ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " # ", " # ", " # ", "   ", " # "}
-    }
-    
+};
+string Interface[6][4] = {
+            {" |#", " # ", " # ", " #  #  # #"},
+            {" | Имя: ",name, "    ", " # "},
+            {" | Класс: ", class_hero, "  ", " # "},
+            {" | HP: ", to_string(HP), "        ", " # "},
+            {" | DMG: ", to_string(DMG), "        ", " # "},
+            {" |#", " # ", " # ", " #  #  # #"}
 };
 
 
-void static Move(char m) { // Создаём функцию, отвечающую за передвижение игрока
-    if (m == 'e') {
-        // player_invent[player_inv_i] = loot_item;
-        // ++player_inv_i; 
-        Maps[map_number][player_y][player_x] = " . "; // Очищаем положение игрока на исходной карте
-        map_number == size(Maps) - 1 ? map_number = 0 : map_number++; // Переключение на следующую локацию
-        Maps[map_number][player_y][player_x] = " P "; // Спавним игрока на новой карте
-    }
 
-    else if (m == 'w' && (Maps[map_number][player_y - 1][player_x] != " # ")) {
-        Maps[map_number][player_y][player_x] = " . "; Maps[map_number][--player_y][player_x] = player;
-    }
-    else if (m == 's' && (Maps[map_number][player_y + 1][player_x] != " # ")) {
-        Maps[map_number][player_y][player_x] = " . "; Maps[map_number][++player_y][player_x] = player;
-    }
-    else if (m == 'a' && (Maps[map_number][player_y][player_x - 1] != " # ")) {
-        Maps[map_number][player_y][player_x] = " . "; Maps[map_number][player_y][--player_x] = player;
-    }
-    else if (m == 'd' && (Maps[map_number][player_y][player_x + 1] != " # ")) {
-        Maps[map_number][player_y][player_x] = " . "; Maps[map_number][player_y][++player_x] = player;
-    }
+
+
+string loot_item = " * ";
+int li_y = 4, li_x = 4;
+
+string hero_invent[6] = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 " };
+int hero_inv_i = 0;
+int map_number = 0;
+bool pick_loot_item = false;
+
+string enemy_entity = " A ";
+int enemy_entity_HP = 666;
+int enemy_entity_DMG = 2;
+int enemy_x = 4, enemy_y = 3;
+bool fight_for_enemy = false;
+bool enemy_moves = true;
+bool enemy_life = true;
+
+bool fight = false;
+bool hero_moves = false;
+bool can_go = true;
+
+// не знаю,какая я то хрень связаная с боем
+void Go_hero() {
+    if (fight == false) { can_go = true; }
+    else if (fight == true && hero_moves == true) { can_go = true; }
+    else if (fight == true && hero_moves == false) { can_go = false; }
 }
 
-string interface[][4] = { // Создаём переменную, в которой храним информацию игрока для вывода в терминал
-     {" |#", " # ", " # ", " #  #  # #"},
-     {},
-     {},
-     {},
-     {},
-     {},
-     {" |#", " # ", " # ", " #  #  # #"}
-};
-
-void static UI_Update() { // Функцией обновляем данные в переменную interface
-    interface[1][0] = " | Имя: " + player_name + "    ", " # ";
-    interface[2][0] = " | Класс: " + player_class + "  ", " # ";
-    interface[3][0] = " | HP: " + to_string(player_hp) + "        ", " # ";
-    interface[4][0] = " | DMG: " + to_string(player_dmg) + "        ", " # ";
-    interface[5][0] = " | MAP: #" + to_string(map_number);
+//Жизнь
+void Life_all() {
+    if (HP < 1) { life = false; }
+    else { life = true; }
+    if (enemy_entity_HP < 1) { enemy_life = false; }
+    else { enemy_life = true; }
 }
 
-
-
-void static UI_Map() { // Функция, которая выводит интерфейс управления игрой
-    if (li_x == player_x && li_y == player_y) {
-        cout << " # e - Go       # " << endl;
-
-    }
-    else { Maps[map_number][li_y][li_x] = loot_item; }
-    cout << " # w - ↑ || s - ↓ || a - ← || d - → # " << endl;
-    cout << " # 0 - exit                         # " << endl;
-    cout << " #  #  #  #  #  #  #  #  #  #  #  # #" << endl;
-}
-
-void static Render_map() { // Функция, которая обновляет интерфейс карты при изменении действий в игре
-    UI_Update(); // Обновляем интерфейс информации игрока
-    for (int i = 0; i < size(Maps[map_number]); i++) {
-        for (int j = 0; j < size(Maps[map_number][i]); j++) { // Вывод карты игрока
-             cout << Maps[map_number][i][j];
+// карта
+void Render_map() {
+    for (int i = 0; i < size(Map[map_number]); i++) {
+        for (int j = 0; j < size(Map[map_number][i]); j++) { // Вывод карты игрока
+            cout << Map[map_number][i][j];
         }
-        for (int J = 0; J < size(interface[i]); J++) { // Вывод информации игрока
-            cout << interface[i][J];
+        for (int J = 0; J < size(Interface[i]); J++) { // Вывод информации игрока
+            cout << Interface[i][J];
         }
         cout << endl;
     }
 }
 
+//Тут проверка на близость врага
+bool getActionOnEnemyX(int hero_x, int hero_y, int enemy_x, int enemy_y) {
+    return (enemy_y == hero_y && (enemy_x - 1 == hero_x || enemy_x + 1 == hero_x));
+}
 
-int main() { // Главная функция
-    setlocale(LC_ALL, "ru"); // Устанавливаем русский язык в консоли
+bool getActionOnEnemyY(int hero_x, int hero_y, int enemy_x, int enemy_y) {
+    return (enemy_x == hero_x && (enemy_y - 1 == hero_y || enemy_y + 1 == hero_y));
+}
 
-    cout << "Введите имя вашего персонажа: ";
-    cin >> interface[1][1];
-    interface[1][1] += "  #";
+char f; // переменная клавиши для управления,которую вытащили из main потому,что ее используют в UI_Map,который выше main
 
-    map_number = 0; // При запуске игры устанавливаем первую (нулевую в программе) карту
-    Maps[map_number][player_y][player_x] = player; // Указываем, что в этой координате спанится игрок и выводим его
-    Maps[map_number][li_y][li_x] = loot_item; // Указываем, что в этой координате спанится действие и выводим его
-    while (true) { // Запускаем бесконечный цикл, чтобы программа не останавливалась, если произведётся действие
-        system("cls"); // Обновляем интрфейс терминала, (если оно вообще у вас будет работать) чтобы не было большого вывода символов
-        Render_map(); // Обновляем интрефейс карты
-        // Render_Invert();
-        UI_Map(); // Обновляем интрефейс управления
-        char ch;
-        cin >> ch;
-        if (ch == '0') { break; } // Остановка программы, если указан прописанный символ в ковычках
-        Move(ch); // Совершаем некоторое действие, указанное от игрока
+// интерфейc
+void UI_Map() {
+    bool f_string = false;
+    bool x_true = getActionOnEnemyX(hero_x, hero_y, enemy_x, enemy_y);
+    bool y_true = getActionOnEnemyY(hero_x, hero_y, enemy_x, enemy_y);
+    cout << " ####################################" << endl;
+    cout << " #";
+    if (li_x == hero_x && li_y == hero_y && pick_loot_item == false) {
+        cout << " e-!;";
+    }
+    else { Map[map_number][li_y][li_x] = loot_item; }
+    if (x_true || y_true) {
+        cout << " q-*;";
+    }
+    cout << " w-˄;";
+    cout << " s-˅;";
+    cout << " a-˂;";
+    cout << " d-˃;";
+    cout << " 0-E";
+    if (li_x == hero_x && li_y == hero_y && pick_loot_item == false) {
+        cout << "#" << endl;
+    }
+    else if (x_true || y_true) {
+        cout << "     #" << endl;
+    }
+    else { cout << "          #" << endl; }
+    cout << " ####################################" << endl;
+    if (fight == false) {
+        cout << " #Бой не идет                       #" << endl;
+    }
+    else {
+        cout << " #Бой идет                          #" << endl;
+    }
+    if (can_go == false) {
+        cout << " #Не ваш ход                        #" << endl;
+    }
+    else {
+        cout << " #Ваш ход                           #" << endl;
+    }
+    cout << " ####################################" << endl;
+    //доп.информация для кодера
+    if (f == 'i') {
+        cout << "hero_moves: " << hero_moves;
+        cout << " can_go: " << can_go << endl;
+        cout << "HP: " << HP;
+        cout << " map_number: " << map_number << endl;
+        cout << "pick_loot_item: " << pick_loot_item;
+        cout << " enemy_entity_HP: " << enemy_entity_HP << endl;
+        cout << "fight_for_enemy: " << fight_for_enemy;
+        cout << " fight: " << fight << endl;
+        cout << "enemy_life: " << enemy_life;
+        cout << " enemy_moves: " << enemy_moves << endl;
+        cout << "life: " << life;
+        cout << " f_string: " << f_string << endl;
+        cout << "x_true: " << x_true;
+        cout << " y_true: " << y_true << endl;
     }
 }
 
-//bool static getActionOnEnemyX(int hero_x, int hero_y, int enemy_x, int enemy_y) {
-//    return (enemy_y == hero_y && (enemy_x - 1 == hero_x || enemy_x + 1 == hero_x));
-//}
-//
-//bool static getActionOnEnemyY(int hero_x, int hero_y, int enemy_x, int enemy_y) {
-//    return (enemy_x == hero_x && (enemy_y - 1 == hero_y || enemy_y + 1 == hero_y));
-//}
+// управление
+void Move(char m) {
+    bool x_true = getActionOnEnemyX(hero_x, hero_y, enemy_x, enemy_y);
+    bool y_true = getActionOnEnemyY(hero_x, hero_y, enemy_x, enemy_y);
+    //Ход игрока проверяется
+    if (can_go == true) {
+        // взять
+        if (m == 'e' && li_x == hero_x && li_y == hero_y && pick_loot_item == false) {
+            hero_invent[hero_inv_i] = loot_item;
+            pick_loot_item = true;
+            ++hero_inv_i;
+            if (map_number == 0) { map_number = 1;Map[map_number][hero_y][hero_x] = hero; }
+            else if (map_number == 1) { map_number = 0;Map[map_number][hero_y][hero_x] = hero; }
+        }
+        //рядом враг и начать бой
+        if (m == 'q' && (x_true || y_true) && fight == false) {
+            fight = true;
+            fight_for_enemy = true;
+            enemy_moves = true;
+            Go_hero();
+        }
+
+        //Ходьба
+        if (m == 'w' && Map[map_number][hero_y - 1][hero_x] != " # " && Map[map_number][hero_y - 1][hero_x] != Map[map_number][enemy_y][enemy_x]) { //вверх
+            Map[map_number][hero_y][hero_x] = " . "; Map[map_number][--hero_y][hero_x] = hero;
+            if (fight) { hero_moves = false;Go_hero(); }
+        }
+        if (m == 's' && Map[map_number][hero_y + 1][hero_x] != " # " && Map[map_number][hero_y + 1][hero_x] != Map[map_number][enemy_y][enemy_x]) { //вниз
+            Map[map_number][hero_y][hero_x] = " . "; Map[map_number][++hero_y][hero_x] = hero;
+            if (fight) { hero_moves = false;Go_hero(); }
+        }
+        if (m == 'a' && Map[map_number][hero_y][hero_x - 1] != " # " && Map[map_number][hero_y][hero_x - 1] != Map[map_number][enemy_y][enemy_x]) { //влево
+            Map[map_number][hero_y][hero_x] = " . "; Map[map_number][hero_y][--hero_x] = hero;
+            if (fight) { hero_moves = false;Go_hero(); }
+        }
+        if (m == 'd' && Map[map_number][hero_y][hero_x + 1] != " # " && Map[map_number][hero_y][hero_x + 1] != Map[map_number][enemy_y][enemy_x]) { //вправо
+            Map[map_number][hero_y][hero_x] = " . "; Map[map_number][hero_y][++hero_x] = hero;
+            if (fight) { hero_moves = false;Go_hero(); }
+        }
+    }
+}
+
+void Move_enemy() {
+    bool x_true = getActionOnEnemyX(hero_x, hero_y, enemy_x, enemy_y);
+    bool y_true = getActionOnEnemyY(hero_x, hero_y, enemy_x, enemy_y);
+    if (enemy_moves == true && fight_for_enemy == true && enemy_life == true) {
+        if (x_true || y_true) {
+            HP = HP - enemy_entity_DMG;
+            Life_all();
+            hero_moves = true;
+            Go_hero();
+        }
+    }
+}
+
+// отображения инвентаря
+void Render_Invert() {
+    cout << " # Inventory:";
+    for (int i = 0; i < size(hero_invent); i++) {
+        cout << (hero_invent[i]);
+    }
+    cout << "     #";
+    cout << endl;
+
+}
+
+// что видит игрок
+int main() {
+    setlocale(LC_ALL, "ru");
+    if (life == false) { return 0; }
+    Map[map_number][hero_y][hero_x] = hero;
+    Map[map_number][li_y][li_x] = loot_item;
+    Map[map_number][enemy_y][enemy_x] = enemy_entity;
+    while (true) {
+        system("cls");
+        Render_map();
+        Render_Invert();
+        UI_Map();
+        cout << "Введите команду" << endl;
+        cin >> f;
+        if (f == '0') { break; }
+        else { Move(f); }
+    }
+}
