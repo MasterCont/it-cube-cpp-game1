@@ -4,19 +4,20 @@
 using namespace std;
 
 // Создаём некоторую информацию о нашем приложении
-string version = "0.0.5";
+string version = "0.0.6";
 string name = "@it_cube_cpp_game1";
 bool debug = false; // если активна, то отображаем раскладку
 
 // Создаём игрока
 class Player {
     public:
-        string designation = " P "; // Создаём интерфейс игрока
         string name; // Создаём переменную, в котором запишем имя игрока
         string className = "@player_class_name"; // Создаём переменную, в котором записываем "класс" игрока
+        string player_invent[6] = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 " };
         int pos_x = 2, pos_y = 2; // Прописываем спавн игрока на координатах по x и y
         int hp = 10; // Создаём хп игроку
         int dmg = 2;
+        int inv_i = 0;
 };
 
 // Создаём противника (моба) игрока
@@ -31,16 +32,26 @@ class Enemy {
         bool life = true; // Жив ли моб
 };
 
+// Создаём координаты спавна для каждого объекта
+class Spawn {
+    public:
+        int li_pos_y = 4, li_pos_x = 4; // Прописываем спавн действия на координатах по x и y
+};
+
+class Designations {
+    public:
+        const string loot_item = " * "; // Создаём обозначение действия
+        const string border = " # "; // Создаём обозначение границ
+        const string player = " P "; // Создаём обозначение игрока
+        const string space = " . "; // Создаём обозначение пространства
+};
 
 Player player; // Создаём переменную игрока для взаимодействия с игроком
 Enemy enemy; // Создаём свойства моба
+Spawn spawn; // Создаём переменную для взаимодействия со спавнами объектов
+Designations designations;
 
 
-string loot_item = " * "; // Создаём интерфейс действия
-int li_y = 4, li_x = 4; // Прописываем спавн действия на координатах по x и y
-
-string hero_invent[6] = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 " };
-int player_inv_i = 0;
 bool pick_loot_item = false; // Поднят ли предмет игроком
 
 // Параметры игры для игрока
@@ -50,34 +61,37 @@ bool can_go = true; // Может ли передвигаться игрок
 
 int map_number = 0; // Указываем, что по умолчанию загружается первая (нулевая по программе) карта
 
-const int maps_size = 6;
+const int maps_size = 6; // Создаём размер барьера
+string border = designations.border;
+string space = designations.space;
 string Maps[][maps_size][maps_size]{
 
+
     { // Map 0 - Создаём карту 1
-        {" # ", " # ", " # ", " # ", " # ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " # ", " # ", " # ", " # ", " # "}
+        {border, border, border, border, border, border},
+        {border, space , space , space , space , border},
+        {border, space , space , space , space , border},
+        {border, space , space , space , space , border},
+        {border, space , space , space , space , border},
+        {border, border, border, border, border, border}
     },
 
     { // Map 1 - Создаём карту 2
-        {" # ", " # ", " # ", "   ", "   ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {"   ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", "   "},
-        {" # ", " # ", " # ", " # ", "   ", "   "}
+        {border, border, border, "   ", "   ", border},
+        {border, space , space , space , space , border},
+        {border, space , space , space , space , border},
+        {"   ", space , space , space , space , border},
+        {border, space , space , space , space , "   "},
+        {border, border, border, border, "   ", "   "}
     },
 
     { // Map 2 - Создаём карту 3
-        {" # ", " # ", " # ", "   ", "   ", " # "},
-        {"   ", " . ", " . ", " . ", " . ", " # "},
-        {"   ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " . ", " . ", " . ", " . ", " # "},
-        {" # ", " # ", " # ", " # ", "   ", " # "}
+        {border, border, border, "   ", "   ", border},
+        {"   ", space , space , space , space , border},
+        {"   ", space , space , space , space , border},
+        {border, space , space , space , space , border},
+        {border, space , space , space , space, border},
+        {border, border, border, border, "   ", border}
     }
     
 };
@@ -93,25 +107,25 @@ bool static getActionOnEnemyY(int player_pos_x, int player_pos_y, int enemy_pos_
 
 
 void static Move(char m) { // Создаём функцию, отвечающую за передвижение игрока
-    if (m == 'e' && li_x == player.pos_x && li_y == player.pos_y && pick_loot_item == false) {
+    if (m == 'e' && spawn.li_pos_x == player.pos_x && spawn.li_pos_y == player.pos_y && pick_loot_item == false) {
         // player_invent[player_inv_i] = loot_item;
         // ++player_inv_i; 
-        Maps[map_number][player.pos_y][player.pos_x] = " . "; // Очищаем положение игрока на исходной карте
+        Maps[map_number][player.pos_y][player.pos_x] = designations.space /* = " . " */; // Очищаем положение игрока на исходной карте 
         map_number == size(Maps) - 1 ? map_number = 0 : map_number++; // Переключение на следующую локацию
-        Maps[map_number][player.pos_y][player.pos_x] = " P "; // Спавним игрока на новой карте
+        Maps[map_number][player.pos_y][player.pos_x] = designations.player /* = " P " */; // Спавним игрока на новой карте
     }
 
-    else if (m == 'w' && (Maps[map_number][player.pos_y - 1][player.pos_x] != " # ")) {
-        Maps[map_number][player.pos_y][player.pos_x] = " . "; Maps[map_number][--player.pos_y][player.pos_x] = player.designation;
+    else if (m == 'w' && (Maps[map_number][player.pos_y - 1][player.pos_x] != designations.border)) { // != " # "
+        Maps[map_number][player.pos_y][player.pos_x] = designations.space /* = " . " */; Maps[map_number][--player.pos_y][player.pos_x] = designations.player;
     }
-    else if (m == 's' && (Maps[map_number][player.pos_y + 1][player.pos_x] != " # ")) {
-        Maps[map_number][player.pos_y][player.pos_x] = " . "; Maps[map_number][++player.pos_y][player.pos_x] = player.designation;
+    else if (m == 's' && (Maps[map_number][player.pos_y + 1][player.pos_x] != designations.border)) { // != " # "
+        Maps[map_number][player.pos_y][player.pos_x] = designations.space /* = " . " */;; Maps[map_number][++player.pos_y][player.pos_x] = designations.player;
     }
-    else if (m == 'a' && (Maps[map_number][player.pos_y][player.pos_x - 1] != " # ")) {
-        Maps[map_number][player.pos_y][player.pos_x] = " . "; Maps[map_number][player.pos_y][--player.pos_x] = player.designation;
+    else if (m == 'a' && (Maps[map_number][player.pos_y][player.pos_x - 1] != designations.border)) { // != " # "
+        Maps[map_number][player.pos_y][player.pos_x] = designations.space /* = " . " */;; Maps[map_number][player.pos_y][--player.pos_x] = designations.player;
     }
-    else if (m == 'd' && (Maps[map_number][player.pos_y][player.pos_x + 1] != " # ")) {
-        Maps[map_number][player.pos_y][player.pos_x] = " . "; Maps[map_number][player.pos_y][++player.pos_x] = player.designation;
+    else if (m == 'd' && (Maps[map_number][player.pos_y][player.pos_x + 1] != designations.border)) { // != " # "
+        Maps[map_number][player.pos_y][player.pos_x] = designations.space /* = " . " */;; Maps[map_number][player.pos_y][++player.pos_x] = designations.player;
     }
 
     else if (m == 'i') !debug ? debug = true : debug = false; // Вызов отладки
@@ -134,17 +148,18 @@ void static UI_Update() { // Функцией обновляем данные в
 void static UI_Map() { // Функция, которая выводит интерфейс управления игрой
     bool x_true = getActionOnEnemyX(player.pos_x, player.pos_y, enemy.pos_x, enemy.pos_y);
     bool y_true = getActionOnEnemyY(player.pos_x, player.pos_y, enemy.pos_x, enemy.pos_y);
-    if (li_x == player.pos_x && li_y == player.pos_y) {
+    if (spawn.li_pos_x == player.pos_x && spawn.li_pos_y == player.pos_y) {
         cout << " # e - Go       # " << endl;
 
     }
-    else { Maps[map_number][li_y][li_x] = loot_item; }
+    else { Maps[map_number][spawn.li_pos_y][spawn.li_pos_x] = designations.loot_item; }
     cout << " # w - ↑ || s - ↓ || a - ← || d - → # " << endl;
     cout << " # 0 - exit                         # " << endl;
     cout << " #  #  #  #  #  #  #  #  #  #  #  # #" << endl;
 
     if (debug) {
-       cout << "player_moves: " << player_moves;
+       cout << "player_moves: " << player_moves << endl;
+       cout << "player.pos_x: " << player.pos_x << " | " << "player.pos_y: " << player.pos_y << endl;
        // cout << " can_go: " << can_go << endl;
         cout << "HP: " << player.hp << endl;
         cout << "map_number: " << map_number << endl;
@@ -183,8 +198,8 @@ int main() { // Главная функция
     interface[1][1] += "  #";
 
     map_number = 0; // При запуске игры устанавливаем первую (нулевую в программе) карту
-    Maps[map_number][player.pos_y][player.pos_x] = player.designation; // Указываем, что в этой координате спанится игрок и выводим его
-    Maps[map_number][li_y][li_x] = loot_item; // Указываем, что в этой координате спанится действие и выводим его
+    Maps[map_number][player.pos_y][player.pos_x] = designations.player; // Указываем, что в этой координате спанится игрок и выводим его
+    Maps[map_number][spawn.li_pos_y][spawn.li_pos_x] = designations.loot_item; // Указываем, что в этой координате спанится действие и выводим его
     while (true) { // Запускаем бесконечный цикл, чтобы программа не останавливалась, если произведётся действие
         system("cls"); // Обновляем интрфейс терминала, (если оно вообще у вас будет работать) чтобы не было большого вывода символов
         Render_map(); // Обновляем интрефейс карты
