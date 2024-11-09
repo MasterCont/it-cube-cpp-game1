@@ -4,7 +4,7 @@
 using namespace std;
 
 // Создаём некоторую информацию о нашем приложении
-string version = "0.0.6";
+string version = "0.0.7";
 string name = "@it_cube_cpp_game1";
 bool debug = false; // если активна, то отображаем раскладку
 
@@ -18,6 +18,8 @@ class Player {
         int hp = 10; // Создаём хп игроку
         int dmg = 2;
         int inv_i = 0;
+        bool moves = false; // Можешь ли игрок ходить независимо от боя
+        bool life = true; // Жив ли игрок
 };
 
 // Создаём противника (моба) игрока
@@ -44,6 +46,7 @@ class Designations {
         const string border = " # "; // Создаём обозначение границ
         const string player = " P "; // Создаём обозначение игрока
         const string space = " . "; // Создаём обозначение пространства
+        const string enemy = " A "; // Создаём обозначение противника (моба)
 };
 
 Player player; // Создаём переменную игрока для взаимодействия с игроком
@@ -56,7 +59,6 @@ bool pick_loot_item = false; // Поднят ли предмет игроком
 
 // Параметры игры для игрока
 bool fight = false; // Идёт бой для игрока или нет
-bool player_moves = false; // Можешь ли игрок ходить независимо от боя
 bool can_go = true; // Может ли передвигаться игрок
 
 int map_number = 0; // Указываем, что по умолчанию загружается первая (нулевая по программе) карта
@@ -107,6 +109,27 @@ bool static getActionOnEnemyY(int player_pos_x, int player_pos_y, int enemy_pos_
 
 
 void static Move(char m) { // Создаём функцию, отвечающую за передвижение игрока
+
+    // Если игрок находится рядом с противником
+    bool x_true = getActionOnEnemyX(player.pos_x, player.pos_y, enemy.pos_x, enemy.pos_y); // по абциссе (оси X)
+    bool y_true = getActionOnEnemyY(player.pos_x, player.pos_y, enemy.pos_x, enemy.pos_y); // по ординате (оси Y)
+
+    class ChecksOnMove {
+    public: // Останавливаем игрока, если...
+        bool forward_border = (Maps[map_number][player.pos_y - 1][player.pos_x] != designations.border); // Если впереди будет барьер
+        bool back_border = (Maps[map_number][player.pos_y + 1][player.pos_x] != designations.border); // Если сзади будет барьер
+        bool left_border = (Maps[map_number][player.pos_y][player.pos_x - 1] != designations.border); // Если слева будет барьер
+        bool right_border = (Maps[map_number][player.pos_y][player.pos_x + 1] != designations.border); // Если справа будет барьер
+
+        bool forward_enemy = Maps[map_number][player.pos_y - 1][player.pos_x] != Maps[map_number][enemy.pos_y][enemy.pos_x]; // Если впереди будет противник
+        bool back_enemy = Maps[map_number][player.pos_y + 1][player.pos_x] != Maps[map_number][enemy.pos_y][enemy.pos_x]; // Если сзади будет противник
+        bool left_enemy = Maps[map_number][player.pos_y][player.pos_x - 1] != Maps[map_number][enemy.pos_y][enemy.pos_x]; // Если слева будет противник
+        bool right_enemy = Maps[map_number][player.pos_y][player.pos_x + 1] != Maps[map_number][enemy.pos_y][enemy.pos_x]; // Если справа будет противник
+    };
+
+    ChecksOnMove move;
+
+
     if (m == 'e' && spawn.li_pos_x == player.pos_x && spawn.li_pos_y == player.pos_y && pick_loot_item == false) {
         // player_invent[player_inv_i] = loot_item;
         // ++player_inv_i; 
@@ -115,16 +138,16 @@ void static Move(char m) { // Создаём функцию, отвечающу�
         Maps[map_number][player.pos_y][player.pos_x] = designations.player /* = " P " */; // Спавним игрока на новой карте
     }
 
-    else if (m == 'w' && (Maps[map_number][player.pos_y - 1][player.pos_x] != designations.border)) { // != " # "
+    else if (m == 'w' && move.forward_border && move.forward_enemy) { // != " # "
         Maps[map_number][player.pos_y][player.pos_x] = designations.space /* = " . " */; Maps[map_number][--player.pos_y][player.pos_x] = designations.player;
     }
-    else if (m == 's' && (Maps[map_number][player.pos_y + 1][player.pos_x] != designations.border)) { // != " # "
+    else if (m == 's' && move.back_border && move.back_enemy) { // != " # "
         Maps[map_number][player.pos_y][player.pos_x] = designations.space /* = " . " */;; Maps[map_number][++player.pos_y][player.pos_x] = designations.player;
     }
-    else if (m == 'a' && (Maps[map_number][player.pos_y][player.pos_x - 1] != designations.border)) { // != " # "
+    else if (m == 'a' && move.left_border && move.left_enemy) { // != " # "
         Maps[map_number][player.pos_y][player.pos_x] = designations.space /* = " . " */;; Maps[map_number][player.pos_y][--player.pos_x] = designations.player;
     }
-    else if (m == 'd' && (Maps[map_number][player.pos_y][player.pos_x + 1] != designations.border)) { // != " # "
+    else if (m == 'd' && move.right_border && move.right_enemy) { // != " # "
         Maps[map_number][player.pos_y][player.pos_x] = designations.space /* = " . " */;; Maps[map_number][player.pos_y][++player.pos_x] = designations.player;
     }
 
@@ -146,33 +169,43 @@ void static UI_Update() { // Функцией обновляем данные в
 
 
 void static UI_Map() { // Функция, которая выводит интерфейс управления игрой
-    bool x_true = getActionOnEnemyX(player.pos_x, player.pos_y, enemy.pos_x, enemy.pos_y);
-    bool y_true = getActionOnEnemyY(player.pos_x, player.pos_y, enemy.pos_x, enemy.pos_y);
-    if (spawn.li_pos_x == player.pos_x && spawn.li_pos_y == player.pos_y) {
-        cout << " # e - Go       # " << endl;
 
-    }
-    else { Maps[map_number][spawn.li_pos_y][spawn.li_pos_x] = designations.loot_item; }
-    cout << " # w - ↑ || s - ↓ || a - ← || d - → # " << endl;
-    cout << " # 0 - exit                         # " << endl;
-    cout << " #  #  #  #  #  #  #  #  #  #  #  # #" << endl;
+    // Если игрок находится рядом с противником
+    bool x_true = getActionOnEnemyX(player.pos_x, player.pos_y, enemy.pos_x, enemy.pos_y); // по абциссе (оси X)
+    bool y_true = getActionOnEnemyY(player.pos_x, player.pos_y, enemy.pos_x, enemy.pos_y); // по ординате (оси Y)
 
-    if (debug) {
-       cout << "player_moves: " << player_moves << endl;
-       cout << "player.pos_x: " << player.pos_x << " | " << "player.pos_y: " << player.pos_y << endl;
-       // cout << " can_go: " << can_go << endl;
-        cout << "HP: " << player.hp << endl;
+    if (spawn.li_pos_x == player.pos_x && spawn.li_pos_y == player.pos_y) cout << " # e - Go       # " << endl; // Если игрок находится на координате действия
+    if (x_true || y_true) cout << " # q - Action   # " << endl; // Если игрок находится возле противника
+    else Maps[map_number][spawn.li_pos_y][spawn.li_pos_x] = designations.loot_item;
+
+    // Вывод интрефейса управления
+    cout << endl << " #  #  #  #  #  #  #  #  #  #  #  # #" << endl;
+    cout << designations.border << " w-˄;" << " s-˅;" << " a-˂;" << " d-˃;" << " 0-E" << designations.border;
+    cout << endl << " #  #  #  #  #  #  #  #  #  #  #  # #" << endl;
+
+    if (debug) { // Вывод интерфейса отладки, если она вызвана
+        cout << endl;
+        cout << "Version: " << version << endl;
+        cout << endl;
+        cout << "player.pos_x: " << player.pos_x << " | " << "player.pos_y: " << player.pos_y << endl;
+        cout << "player.moves: " << player.moves << endl;
+        cout << "player.hp: " << player.hp << endl;
+        cout << "player.life: " << player.life << endl;
+        cout << endl;
+        cout << "enemy.pos_x: " << enemy.pos_x << " | " << "player.pos_y: " << enemy.pos_y << endl;
+        cout << "enemy.moves: " << enemy.moves << endl;
+        cout << "enemy.hp: " << enemy.hp << endl;
+        cout << "enemy.life: " << enemy.life << endl;
+        cout << endl;
         cout << "map_number: " << map_number << endl;
         cout << "pick_loot_item: " << pick_loot_item;
-        cout << " enemy_entity_HP: " << enemy.hp << endl;
         cout << "fight_for_enemy: " << enemy.fight;
         cout << " fight: " << fight << endl;
-        cout << "enemy_life: " << enemy.life;
-        cout << " enemy_moves: " << enemy.moves << endl;
        // cout << "life: " << life;
        // cout << " f_string: " << f_string << endl;
-       cout << "x_true: " << x_true;
-       cout << " y_true: " << y_true << endl;
+        // cout << " can_go: " << can_go << endl;
+        cout << "x_true: " << x_true;
+        cout << " y_true: " << y_true << endl;
     }
 }
 
@@ -200,6 +233,7 @@ int main() { // Главная функция
     map_number = 0; // При запуске игры устанавливаем первую (нулевую в программе) карту
     Maps[map_number][player.pos_y][player.pos_x] = designations.player; // Указываем, что в этой координате спанится игрок и выводим его
     Maps[map_number][spawn.li_pos_y][spawn.li_pos_x] = designations.loot_item; // Указываем, что в этой координате спанится действие и выводим его
+    Maps[map_number][enemy.pos_y][enemy.pos_x] = designations.enemy; // Указываем, что в этой координате будет спавниться моб
     while (true) { // Запускаем бесконечный цикл, чтобы программа не останавливалась, если произведётся действие
         system("cls"); // Обновляем интрфейс терминала, (если оно вообще у вас будет работать) чтобы не было большого вывода символов
         Render_map(); // Обновляем интрефейс карты
