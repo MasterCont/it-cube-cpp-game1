@@ -62,6 +62,10 @@ bool fight_for_enemy = false;
 bool enemy_moves = true;
 bool enemy_life = true;
 
+string Cyrllius = " C ";
+int Cyrllius_DMG = 2;
+int Cyrllius_x = 2, Cyrllius_y = 1;
+
 bool fight = false;
 bool hero_moves = false;
 bool can_go = true;
@@ -75,6 +79,7 @@ void Go_hero() {
 
 //Жизнь
 void Life_all() {
+    if (HP < 10) { Interface[3][2] = "         "; }
     if (HP < 1) { life = false; }
     else { life = true; }
     if (enemy_entity_HP < 1) { enemy_life = false; }
@@ -168,51 +173,67 @@ void UI_Map() {
     }
 }
 
-bool Move_enemy0 = false;
-bool Move_enemy1 = false;
-
 //враг
 void Move_enemy() {
     bool x_true = getActionOnEnemyX(hero_x, hero_y, enemy_x, enemy_y);
     bool y_true = getActionOnEnemyY(hero_x, hero_y, enemy_x, enemy_y);
-    while (enemy_moves == true && fight_for_enemy == true && enemy_life == true) {
-        Move_enemy0 = true;
-        if (x_true || y_true) {
+    if (enemy_moves == true && fight_for_enemy == true && enemy_life == true) {
+        if ((x_true || y_true) && enemy_moves == true && enemy_life == true) {
             HP = HP - enemy_entity_DMG;
+            Interface[3][1] = to_string(HP);
             Life_all();// функция проверка на жизнь всех и игрока
             enemy_moves = false;//переменная хода для моба
             hero_moves = true;
             Go_hero();// функция проверка на ходьбу игрока
         }
-        else if (Map[map_number][hero_y][hero_x - 1] != " # ") {
-            Move_enemy1 = true;
-            Map[map_number][enemy_y][enemy_x] = Map[map_number][hero_y][hero_x - 1];
-            hero_moves = true;
-            Go_hero();// функция проверка на ходьбу игрока
+        else {
+            if (Map[map_number][hero_y][hero_x - 1] != " # ") {
+                if (Map[map_number][enemy_y][enemy_x] != Map[map_number][li_y][li_x]) {
+                    Map[map_number][enemy_y][enemy_x] = " . ";
+                }
+                else { Map[map_number][enemy_y][enemy_x] = loot_item; }
+                enemy_x = hero_x - 1;
+                enemy_y = hero_y;
+                Map[map_number][enemy_y][enemy_x] = enemy_entity;
         }
         else if (Map[map_number][hero_y][hero_x + 1] != " # ") {
-            Move_enemy1 = true;
-            Map[map_number][enemy_y][enemy_x] = Map[map_number][hero_y][hero_x + 1];
-            hero_moves = true;
-            Go_hero();// функция проверка на ходьбу игрока
+                if (Map[map_number][enemy_y][enemy_x] != Map[map_number][li_y][li_x]) {
+                    Map[map_number][enemy_y][enemy_x] = " . ";
+                }
+                else { Map[map_number][enemy_y][enemy_x] = loot_item; }
+                enemy_x = hero_x + 1;
+                enemy_y = hero_y;
+                Map[map_number][enemy_y][enemy_x] = enemy_entity;
         }
-        else if (Map[map_number][hero_y][hero_x - 1] != " # ") {
-            Move_enemy1 = true;
-            Map[map_number][enemy_y][enemy_x] = Map[map_number][hero_y - 1][hero_x];
-            hero_moves = true;
-            Go_hero();// функция проверка на ходьбу игрока
+        else if (Map[map_number][hero_y - 1][hero_x] != " # ") {
+                if (Map[map_number][enemy_y][enemy_x] != Map[map_number][li_y][li_x]) {
+                    Map[map_number][enemy_y][enemy_x] = " . ";
+                }
+                else { Map[map_number][enemy_y][enemy_x] = loot_item; }
+                enemy_y = hero_y - 1;
+                enemy_x = hero_x;
+                Map[map_number][enemy_y][enemy_x] = enemy_entity;
         }
-        else if (Map[map_number][hero_y][hero_x - 1] != " # ") {
-            Move_enemy1 = true;
-            Map[map_number][enemy_y][enemy_x] = Map[map_number][hero_y + 1][hero_x];
-            hero_moves = true;
-            Go_hero();// функция проверка на ходьбу игрока
+        else if (Map[map_number][hero_y + 1][hero_x] != " # ") {
+                if (Map[map_number][enemy_y][enemy_x] != Map[map_number][li_y][li_x]) {
+                    Map[map_number][enemy_y][enemy_x] = " . ";
+                }
+                else { Map[map_number][enemy_y][enemy_x] = loot_item; }
+                enemy_y = hero_y + 1;
+                enemy_x = hero_x;
+                Map[map_number][enemy_y][enemy_x] = enemy_entity;
+        }
+        !enemy_moves;//переменная хода для моба
+        hero_moves;
+        Go_hero();// функция проверка на ходьбу игрока
         }
     }
 }
 
 // управление
 void Move(char m) {
+    Go_hero();
+    Move_enemy();
     bool x_true = getActionOnEnemyX(hero_x, hero_y, enemy_x, enemy_y);
     bool y_true = getActionOnEnemyY(hero_x, hero_y, enemy_x, enemy_y);
     //Ход игрока проверяется
@@ -224,19 +245,35 @@ void Move(char m) {
             ++hero_inv_i;
             if (map_number == 0) { map_number = 1;Map[map_number][hero_y][hero_x] = hero; }
             else if (map_number == 1) { map_number = 0;Map[map_number][hero_y][hero_x] = hero; }
+            fight_for_enemy = false;
+            
         }
         //рядом враг и начать бой
-        if (m == 'q' && (x_true || y_true) && fight == false) {
-            fight = true;
-            fight_for_enemy = true;
-            enemy_moves = true;
-            Move_enemy();
-            Go_hero();
+        if (m == 'q' && (x_true || y_true)) {
+            if (fight == false) {
+                fight = true;
+                Go_hero();
+                enemy_entity_HP = enemy_entity_HP - DMG;
+                Life_all();
+                fight_for_enemy = true;
+                enemy_moves = true;
+                Move_enemy();
+            }
+            else if (fight == true) {
+                enemy_entity_HP = enemy_entity_HP - DMG;
+                Life_all();
+                hero_moves = false;
+                Go_hero();
+                enemy_moves = true;
+                Move_enemy();
+            }
         }
 
         //Ходьба
-        if (m == 'w' && Map[map_number][hero_y - 1][hero_x] != " # " && Map[map_number][hero_y - 1][hero_x] != Map[map_number][enemy_y][enemy_x]) { //вверх
-            Map[map_number][hero_y][hero_x] = " . "; Map[map_number][--hero_y][hero_x] = hero;
+        if (m == 'w' && Map[map_number][hero_y + 1][hero_x] != " # " && Map[map_number][hero_y + 1][hero_x] != Map[map_number][enemy_y][enemy_x]) { //вверх
+            if (pick_loot_item == true || Map[map_number][hero_y][hero_x] != Map[map_number][li_y][li_x]) { Map[map_number][hero_y][hero_x] = " . "; }
+            else { Map[map_number][hero_y][hero_x] = loot_item; }
+            Map[map_number][--hero_y][hero_x] = hero;
             if (fight && hero_moves) {
             enemy_moves = true;//переменная хода для моба
             Move_enemy();//помогает мобу ходить
@@ -245,7 +282,9 @@ void Move(char m) {
             }
         }
         if (m == 's' && Map[map_number][hero_y + 1][hero_x] != " # " && Map[map_number][hero_y + 1][hero_x] != Map[map_number][enemy_y][enemy_x]) { //вниз
-            Map[map_number][hero_y][hero_x] = " . "; Map[map_number][++hero_y][hero_x] = hero;
+            if (pick_loot_item == true || Map[map_number][hero_y][hero_x] != Map[map_number][li_y][li_x]) { Map[map_number][hero_y][hero_x] = " . "; }
+            else { Map[map_number][hero_y][hero_x] = loot_item; }
+            Map[map_number][++hero_y][hero_x] = hero;
             if (fight && hero_moves) {
             enemy_moves = true;//переменная хода для моба
             Move_enemy();//помогает мобу ходить
@@ -254,7 +293,9 @@ void Move(char m) {
             }
         }
         if (m == 'a' && Map[map_number][hero_y][hero_x - 1] != " # " && Map[map_number][hero_y][hero_x - 1] != Map[map_number][enemy_y][enemy_x]) { //влево
-            Map[map_number][hero_y][hero_x] = " . "; Map[map_number][hero_y][--hero_x] = hero;
+            if (pick_loot_item == true || Map[map_number][hero_y][hero_x] != Map[map_number][li_y][li_x]) { Map[map_number][hero_y][hero_x] = " . "; }
+            else { Map[map_number][hero_y][hero_x] = loot_item; }
+            Map[map_number][hero_y][--hero_x] = hero;
             if (fight && hero_moves) {
             enemy_moves = true;//переменная хода для моба
             Move_enemy();//помогает мобу ходить
@@ -263,7 +304,9 @@ void Move(char m) {
             }
         }
         if (m == 'd' && Map[map_number][hero_y][hero_x + 1] != " # " && Map[map_number][hero_y][hero_x + 1] != Map[map_number][enemy_y][enemy_x]) { //вправо
-            Map[map_number][hero_y][hero_x] = " . "; Map[map_number][hero_y][++hero_x] = hero;
+            if (pick_loot_item == true || Map[map_number][hero_y][hero_x] != Map[map_number][li_y][li_x]) { Map[map_number][hero_y][hero_x] = " . "; }
+            else { Map[map_number][hero_y][hero_x] = loot_item; }
+            Map[map_number][hero_y][++hero_x] = hero;
             if (fight && hero_moves) {
             enemy_moves = true;//переменная хода для моба
             Move_enemy();//помогает мобу ходить
@@ -296,18 +339,18 @@ void Render_Invert() {
 // что видит игрок
 int main() {
     setlocale(LC_ALL, "ru");
-    if (life == false) { return 0; }
-    Map[map_number][hero_y][hero_x] = hero;
     Map[map_number][li_y][li_x] = loot_item;
     Move_enemy();
     Map[map_number][enemy_y][enemy_x] = enemy_entity;
     while (true) {
         system("cls");
+        Map[map_number][Cyrllius_y][Cyrllius_x] = Cyrllius;
+        if (life == false) { Map[map_number][hero_y][hero_x] = "₽";  return 0; }
+        if (Map[map_number][hero_y][hero_x] == Map[map_number][Cyrllius_y][Cyrllius_x]) { for (int i = 10; i > 0; i-- ) { if (Map[map_number][hero_y + 1][hero_x] != " # ") { ++hero_y; }} }// толчок
+        Map[map_number][hero_y][hero_x] = hero;
         Render_map();
         Render_Invert();
         UI_Map();
-        cout << "Move_enemy0:" << Move_enemy0 << endl;
-        cout << "Move_enemy1:" << Move_enemy1 << endl;
         cout << "Введите команду" << endl;
         char f;
         cin >> f;
