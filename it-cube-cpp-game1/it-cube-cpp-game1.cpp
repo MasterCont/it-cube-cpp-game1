@@ -103,7 +103,7 @@ bool getActionOnEnemyY(int hero_x, int hero_y, int enemy_x, int enemy_y) {
     return (enemy_x == hero_x && (enemy_y - 1 == hero_y || enemy_y + 1 == hero_y));
 }
 
-char f; // переменная клавиши для управления,которую вытащили из main потому,что ее используют в UI_Map,который выше main
+bool debug = false; // переменная клавиши для управления,которую вытащили из main потому,что ее используют в UI_Map,который выше main
 
 // интерфейc
 void UI_Map() {
@@ -146,7 +146,7 @@ void UI_Map() {
     }
     cout << " ####################################" << endl;
     //доп.информация для кодера
-    if (f == 'i') {
+    if (debug) {
         cout << "hero_moves: " << hero_moves;
         cout << " can_go: " << can_go << endl;
         cout << "HP: " << HP;
@@ -203,6 +203,7 @@ void Move(char m) {
             Map[map_number][hero_y][hero_x] = " . "; Map[map_number][hero_y][++hero_x] = hero;
             if (fight) { hero_moves = false;Go_hero(); }
         }
+        if (m == 'i') !debug ? debug = true : debug = false;
     }
 }
 
@@ -243,6 +244,7 @@ int main() {
         Render_Invert();
         UI_Map();
         cout << "Введите команду" << endl;
+        char f;
         cin >> f;
         if (f == '0') { break; }
         else { Move(f); }
