@@ -129,6 +129,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="it-cube-cpp-game1.cpp" />
+    <ClCompile Include="modules.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="modules.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

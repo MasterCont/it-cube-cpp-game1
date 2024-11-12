@@ -1,112 +1,11 @@
 ﻿#include <iostream>
 #include <string>
+#include <Windows.h>
+#include "modules.h";
 
 using namespace std;
 
-// Создаём некоторую информацию о нашем приложении
-string version = "0.0.7.1";
-string name = "@it_cube_cpp_game1";
-bool debug = false; // если активна, то отображаем раскладку
-
-// Создаём игрока
-class Player {
-    public:
-        string name; // Создаём переменную, в котором запишем имя игрока
-        string className = "@player_class_name"; // Создаём переменную, в котором записываем "класс" игрока
-        string player_invent[6] = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 " };
-        int pos_x = 2, pos_y = 2; // Прописываем спавн игрока на координатах по x и y
-        int hp = 10; // Создаём хп игроку
-        int dmg = 2;
-        int inv_i = 0;
-        bool moves = false; // Можешь ли игрок ходить независимо от боя
-        bool life = true; // Жив ли игрок
-};
-
-// Создаём противника (моба) игрока
-class Enemy {
-    public:
-        string designation = " A "; // Создаём интерфейс моба
-        int hp = 20; // Здоровья моба
-        int dmg = 2; // Урон моба
-        int pos_x = 4, pos_y = 3; // Позиция спавна моба
-        bool fight = false; // Определение боя для моба
-        bool moves = true; // Может ли моб передвигаться
-        bool life = true; // Жив ли моб
-};
-
-// Создаём координаты спавна для каждого объекта
-class Spawn {
-    public:
-        int li_pos_y = 4, li_pos_x = 4; // Прописываем спавн действия на координатах по x и y
-};
-
-class Designations {
-    public:
-        const string loot_item = " * "; // Создаём обозначение действия
-        const string border = " # "; // Создаём обозначение границ
-        const string player = " P "; // Создаём обозначение игрока
-        const string space = " . "; // Создаём обозначение пространства
-        const string enemy = " A "; // Создаём обозначение противника (моба)
-};
-
-Player player; // Создаём переменную игрока для взаимодействия с игроком
-Enemy enemy; // Создаём свойства моба
-Spawn spawn; // Создаём переменную для взаимодействия со спавнами объектов
-Designations designations;
-
-
-bool pick_loot_item = false; // Поднят ли предмет игроком
-
-// Параметры игры для игрока
-bool fight = false; // Идёт бой для игрока или нет
-bool can_go = true; // Может ли передвигаться игрок
-
-int map_number = 0; // Указываем, что по умолчанию загружается первая (нулевая по программе) карта
-
-const int maps_size = 6; // Создаём размер барьера
-string border = designations.border;
-string space = designations.space;
-string Maps[][maps_size][maps_size]{
-
-
-    { // Map 0 - Создаём карту 1
-        {border, border, border, border, border, border},
-        {border, space , space , space , space , border},
-        {border, space , space , space , space , border},
-        {border, space , space , space , space , border},
-        {border, space , space , space , space , border},
-        {border, border, border, border, border, border}
-    },
-
-    { // Map 1 - Создаём карту 2
-        {border, border, border, "   ", "   ", border},
-        {border, space , space , space , space , border},
-        {border, space , space , space , space , border},
-        {"   ", space , space , space , space , border},
-        {border, space , space , space , space , "   "},
-        {border, border, border, border, "   ", "   "}
-    },
-
-    { // Map 2 - Создаём карту 3
-        {border, border, border, "   ", "   ", border},
-        {"   ", space , space , space , space , border},
-        {"   ", space , space , space , space , border},
-        {border, space , space , space , space , border},
-        {border, space , space , space , space, border},
-        {border, border, border, border, "   ", border}
-    }
-    
-};
-
-// Фукнции для получения разрешения действий, связанных с мобом
-bool static getActionOnEnemyX(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y) {
-    return (enemy_pos_y == player_pos_y && (enemy_pos_x - 1 == player_pos_x || enemy_pos_x + 1 == player_pos_x));
-}
-
-bool static getActionOnEnemyY(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y) {
-    return (enemy_pos_x == player_pos_x && (enemy_pos_y - 1 == player_pos_y || enemy_pos_y + 1 == player_pos_y));
-}
-
+string title = game.name;
 
 void static Move(char m) { // Создаём функцию, отвечающую за передвижение игрока
 
@@ -150,22 +49,21 @@ void static Move(char m) { // Создаём функцию, отвечающу�
     else if (m == 'd' && move.right_border && move.right_enemy) { // != " # "
         Maps[map_number][player.pos_y][player.pos_x] = designations.space /* = " . " */;; Maps[map_number][player.pos_y][++player.pos_x] = designations.player;
     }
-
-    else if (m == 'i') !debug ? debug = true : debug = false; // Вызов отладки
+   
+    else if (m == 'i') !game.debug ? game.debug = true : game.debug = false; // Вызов отладки
 }
 
-string interface[][4] = { // Создаём переменную, в которой храним информацию игрока для вывода в терминал
+string UI_Interface[][4] = { // Создаём переменную, в которой храним информацию игрока для вывода в терминал
      {" |#", " # ", " # ", " #  #  # #"}, {}, {}, {}, {}, {}, {" |#", " # ", " # ", " #  #  # #"}
 };
 
-void static UI_Update() { // Функцией обновляем данные в переменную interface
-    interface[1][0] = " | Имя: " + player.name + "    ", " # ";
-    interface[2][0] = " | Класс: " + player.className + "  ", " # ";
-    interface[3][0] = " | HP: " + to_string(player.hp) + "        ", " # ";
-    interface[4][0] = " | DMG: " + to_string(player.dmg) + "        ", " # ";
-    interface[5][0] = " | MAP: #" + to_string(map_number);
+void static UI_Update() { // Функцией обновляем данные в переменную UI_Interface
+    UI_Interface[1][0] = " | Имя: " + player.name + "    ", " # ";
+    UI_Interface[2][0] = " | Класс: " + player.className + "  ", " # ";
+    UI_Interface[3][0] = " | HP: " + to_string(player.hp) + "        ", " # ";
+    UI_Interface[4][0] = " | DMG: " + to_string(player.dmg) + "        ", " # ";
+    UI_Interface[5][0] = " | MAP: #" + to_string(map_number);
 }
-
 
 
 void static UI_Map() { // Функция, которая выводит интерфейс управления игрой
@@ -183,9 +81,13 @@ void static UI_Map() { // Функция, которая выводит инте
     cout << designations.border << " w-˄;" << " s-˅;" << " a-˂;" << " d-˃;" << " 0-E" << designations.border;
     cout << endl << " #  #  #  #  #  #  #  #  #  #  #  # #" << endl;
 
-    if (debug) { // Вывод интерфейса отладки, если она вызвана
+    if (game.debug) { // Вывод интерфейса отладки, если она вызвана
+
+        // Обновление заголовка терминала для Windows
+        setWindowsConsoleTitle(title + " | " + game.version + " | " + game.author);
+
         cout << endl;
-        cout << "Version: " << version << endl;
+        cout << "Version: " << game.version << endl;
         cout << endl;
         cout << "player.pos_x: " << player.pos_x << " | " << "player.pos_y: " << player.pos_y << endl;
         cout << "player.moves: " << player.moves << endl;
@@ -207,6 +109,10 @@ void static UI_Map() { // Функция, которая выводит инте
         cout << "x_true: " << x_true;
         cout << " y_true: " << y_true << endl;
     }
+    else {
+        // Cброс заголовка терминала для Windows
+        setWindowsConsoleTitle(title);
+    }
 }
 
 void static Render_map() { // Функция, которая обновляет интерфейс карты при изменении действий в игре
@@ -215,8 +121,8 @@ void static Render_map() { // Функция, которая обновляет 
         for (int j = 0; j < size(Maps[map_number][i]); j++) { // Вывод карты игрока
              cout << Maps[map_number][i][j];
         }
-        for (int J = 0; J < size(interface[i]); J++) { // Вывод информации игрока
-            cout << interface[i][J];
+        for (int J = 0; J < size(UI_Interface[i]); J++) { // Вывод информации игрока
+            cout << UI_Interface[i][J];
         }
         cout << endl;
     }
@@ -226,9 +132,15 @@ void static Render_map() { // Функция, которая обновляет 
 int main() { // Главная функция
     setlocale(LC_ALL, "ru.utf-8"); // Устанавливаем русский язык в консоли
 
+    // Установка заголовка терминала для Windows
+    setWindowsConsoleTitle(title);
+
+    // Выводим интрфейс приветствия
+    UI_Hello(title, game.version, game.author, game.git);
+
+    // Добавляем персонажу имя/название
     cout << "Введите имя вашего персонажа: ";
-    cin >> interface[1][1];
-    interface[1][1] += "  #";
+    cin >> UI_Interface[1][1];
 
     map_number = 0; // При запуске игры устанавливаем первую (нулевую в программе) карту
     Maps[map_number][player.pos_y][player.pos_x] = designations.player; // Указываем, что в этой координате спанится игрок и выводим его
