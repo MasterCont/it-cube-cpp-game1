@@ -27,9 +27,4 @@
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="README.md">
-      <Filter>Исходные файлы</Filter>
-    </None>
-  </ItemGroup>
 </Project>
