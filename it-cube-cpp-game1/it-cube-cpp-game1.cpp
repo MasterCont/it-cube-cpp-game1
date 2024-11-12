@@ -130,7 +130,7 @@ void static Render_map() { // Функция, которая обновляет 
 
 
 int main() { // Главная функция
-    setlocale(LC_ALL, "ru.utf-8"); // Устанавливаем русский язык в консоли
+    setlocale(LC_ALL, "ru"); // Устанавливаем русский язык в консоли
 
     // Установка заголовка терминала для Windows
     setWindowsConsoleTitle(title);
