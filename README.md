@@ -9,8 +9,8 @@ A console game developed in the C++ programming language. It was created in the 
 https://github.com/MasterCont/it-cube-cpp-game1/releases
 
 ```bash
-1. Скачиваем it-cube-cpp-game1.zip
-2. Распаковываем zip-файл
-3. Запускаем исполняемый файл (на момент версии 0.0.8 - it-cube-cpp-game1.exe)
+1. Download it-cube-cpp-game1.zip
+2. Unpack the zip file
+3. Run the executable file (at the time of version 0.0.8 - it-cube-cpp-game1.exe )
 
 ```
