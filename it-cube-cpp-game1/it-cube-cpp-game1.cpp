@@ -5,7 +5,7 @@
 
 using namespace std;
 
-string title = game.name;
+string title = game.name; // Dummy
 
 void static Move(char m) { // Создаём функцию, отвечающую за передвижение игрока
 
