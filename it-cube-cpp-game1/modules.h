@@ -1,11 +1,12 @@
 #pragma once
+#include <list>
 
 using namespace std;
 
 // Создаём некоторую информацию о нашем приложении
 class Game {
 public:
-    const string version = "0.0.8";
+    const string version = "0.0.9";
     const string name = "@it_cube_cpp_game1";
     const string author = "MasterCont";
     const string git = "https://github.com/MasterCont/it-cube-cpp-game1.git";
@@ -29,14 +30,45 @@ public:
 // Создаём противника (моба) игрока 
 class Enemy {
 public:
-    string designation = " A "; // Создаём интерфейс моба
+    int hp; // Здоровья моба
+    int dmg; // Урон моба
+    int pos_x, pos_y; // Позиция спавна моба
+    bool fight; // Определение боя для моба
+    bool moves; // Может ли моб передвигаться
+    bool life; // Жив ли моб
+
+    Enemy() {
+        hp = 20;
+        dmg = 2;
+        pos_x = 4, pos_y = 3;
+        fight = false;
+        moves = true;
+        life = true;
+    }
+};
+
+// Создаём противника (моба) игрока 
+class Enemyt {
+public:
     int hp = 20; // Здоровья моба
     int dmg = 2; // Урон моба
-    int pos_x = 4, pos_y = 3; // Позиция спавна моба
+    int pos_x, pos_y; // Позиция спавна моба
     bool fight = false; // Определение боя для моба
     bool moves = true; // Может ли моб передвигаться
     bool life = true; // Жив ли моб
+
+    Enemyt(int pos_x, int pos_y) : pos_x(pos_x), pos_y(pos_y) {}
 };
+
+
+// Создаём объект, в котором будем хранить информацию всех наших сущностей
+class Entities {
+public:
+    list<Enemyt*> enemys[]; // Количество враждебных мобов
+
+   // void addEnemy()
+};
+
 
 // Создаём координаты спавна для каждого объекта
 class Spawn {
@@ -67,6 +99,7 @@ Enemy enemy; // Создаём свойства моба
 Spawn spawn; // Создаём переменную для взаимодействия со спавнами объектов
 Designations designations;
 Game game;
+Entities entities; // Создаём переменную для взаимодействия с мобами
 
 extern string border = designations.border;
 extern string space = designations.space;
@@ -111,3 +144,6 @@ void setWindowsConsoleTitle(string title);
 
 // Функция для вывода окна запуска программы
 void UI_Hello(string title, string version, string author, string git);
+
+// Функция для получения случайного значения в определённом диапазоне от A до B 
+int random(int A, int B);

@@ -2,6 +2,7 @@
 #include <string>
 #include <Windows.h>
 #include "modules.h";
+#include <list>
 
 using namespace std;
 
@@ -35,6 +36,10 @@ void static Move(char m) { // Создаём функцию, отвечающу�
         Maps[map_number][player.pos_y][player.pos_x] = designations.space /* = " . " */; // Очищаем положение игрока на исходной карте 
         map_number == size(Maps) - 1 ? map_number = 0 : map_number++; // Переключение на следующую локацию
         Maps[map_number][player.pos_y][player.pos_x] = designations.player /* = " P " */; // Спавним игрока на новой карте
+    }
+
+    else if (m == 'q' && (x_true || y_true)) { // Если игрок совершает действие с мобом
+
     }
 
     else if (m == 'w' && move.forward_border && move.forward_enemy) { // != " # "
@@ -113,6 +118,10 @@ void static UI_Map() { // Функция, которая выводит инте
         // Cброс заголовка терминала для Windows
         setWindowsConsoleTitle(title);
     }
+
+
+   /* enemy.entities->push_back();*/
+    
 }
 
 void static Render_map() { // Функция, которая обновляет интерфейс карты при изменении действий в игре
@@ -145,8 +154,24 @@ int main() { // Главная функция
     map_number = 0; // При запуске игры устанавливаем первую (нулевую в программе) карту
     Maps[map_number][player.pos_y][player.pos_x] = designations.player; // Указываем, что в этой координате спанится игрок и выводим его
     Maps[map_number][spawn.li_pos_y][spawn.li_pos_x] = designations.loot_item; // Указываем, что в этой координате спанится действие и выводим его
+    //Maps[0][enemy.pos_y][enemy.pos_x] = designations.enemy; // Указываем, что в этой координате будет спавниться моб
+    //Maps[0][enemy.pos_y - 2][enemy.pos_x - 3] = designations.enemy; // Указываем, что в этой координате будет спавниться моб
+
+    int enemys_count = 2;
+    for (int i = 1; i <= enemys_count; i++) { // Создаём враждебных мобов
+        int pos_x = random(1, 4);
+        int pos_y = random(1, 4);
+        
+        entities.enemys->push_back(new Enemyt(pos_x, pos_y));
+        Maps[0][pos_y][pos_x] = designations.enemy;
+     
+   
+        // entities.enemys.push_back(new Enemyt(pos_x, pos_y)); // Записываем объект в список мобов
+        // cout << entities.enemys[i]->pos_x << endl;
+        // Maps[0][entities.enemys[i].][entities.enemys[i]->pos_x] = designations.enemy;
+    }
+  
     while (true) { // Запускаем бесконечный цикл, чтобы программа не останавливалась, если произведётся действие
-        Maps[map_number][enemy.pos_y][enemy.pos_x] = designations.enemy; // Указываем, что в этой координате будет спавниться моб
         system("cls"); // Обновляем интрфейс терминала, (если оно вообще у вас будет работать) чтобы не было большого вывода символов
         Render_map(); // Обновляем интрефейс карты
         // Render_Invert();

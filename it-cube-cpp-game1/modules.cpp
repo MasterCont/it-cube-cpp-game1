@@ -38,3 +38,8 @@ void UI_Hello(string title = res.undefined, string version = res.undefined, stri
     cout << "# # # # # # # # # # #" << endl;
     cout << endl;
 }
+
+// Функция для получения случайного значения в определённом диапазоне от min до max
+int random(int min, int max) {
+    return rand() % max + min;
+}
