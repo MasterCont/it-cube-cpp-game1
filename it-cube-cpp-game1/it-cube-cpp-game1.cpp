@@ -1,10 +1,9 @@
-﻿
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 using namespace std;
 
-// массивы и переменные
-string name = "АКШЫЛ";
+//массивы и переменные
+char name[11];
 string hero = " P ";
 bool life = true;
 int DMG = 2;
@@ -35,16 +34,12 @@ string Map[][6][6]{
 };
 string Interface[6][4] = {
             {" |#", " # ", " # ", " #  #  # #"},
-            {" | Имя: ",name, "    ", " # "},
+            {"","", "", ""},
             {" | Класс: ", class_hero, "  ", " # "},
             {" | HP: ", to_string(HP), "        ", " # "},
             {" | DMG: ", to_string(DMG), "        ", " # "},
             {" |#", " # ", " # ", " #  #  # #"}
 };
-
-
-
-
 
 string loot_item = " * ";
 int li_y = 4, li_x = 4;
@@ -70,6 +65,21 @@ bool fight = false;
 bool hero_moves = false;
 bool can_go = true;
 
+// получение имени
+void get_name() {
+    cout << "Имя не должно превышать 10 символов" << endl;
+    cout << "Введите ваше имя:" << endl;
+    cin >> name;
+    int j = 0;
+    while (true) {
+        j++;
+        if (name[j] == '\0') { break; }
+    }
+    for (int i = j; i < 10; i++) {
+        name[i] = ' ';
+    }
+}
+
 // проверка на ходьбу игрока
 void Go_hero() {
     if (fight == false) { can_go = true; }
@@ -93,7 +103,8 @@ void Render_map() {
             cout << Map[map_number][i][j];
         }
         for (int J = 0; J < size(Interface[i]); J++) { // Вывод информации игрока
-            cout << Interface[i][J];
+            if (i == 1 && J == 1) { cout << " | Имя:" << " " << name << "#"; }
+            else { cout << Interface[i][J]; }
         }
         cout << endl;
     }
@@ -101,14 +112,14 @@ void Render_map() {
 
 //Тут проверка на близость врага
 bool getActionOnEnemyX(int hero_x, int hero_y, int enemy_x, int enemy_y) {
-    return (enemy_y == hero_y && (enemy_x - 1 == hero_x || enemy_x + 1 == hero_x));
+    return (map_number == 0 && (enemy_y == hero_y && (enemy_x - 1 == hero_x || enemy_x + 1 == hero_x)));
 }
 
 bool getActionOnEnemyY(int hero_x, int hero_y, int enemy_x, int enemy_y) {
-    return (enemy_x == hero_x && (enemy_y - 1 == hero_y || enemy_y + 1 == hero_y));
+    return (map_number == 0 && (enemy_x == hero_x && (enemy_y - 1 == hero_y || enemy_y + 1 == hero_y)));
 }
 
-bool debug = false; // переменная клавиши для управления,которую вытащили из main потому,что ее используют в UI_Map,который выше main
+bool debug = false; // debug меню
 
 // интерфейc
 void UI_Map() {
@@ -178,7 +189,7 @@ void Move_enemy() {
     bool x_true = getActionOnEnemyX(hero_x, hero_y, enemy_x, enemy_y);
     bool y_true = getActionOnEnemyY(hero_x, hero_y, enemy_x, enemy_y);
     if (enemy_moves == true && fight_for_enemy == true && enemy_life == true) {
-        if ((x_true || y_true) && enemy_moves == true && enemy_life == true) {
+        if (x_true || y_true) {
             HP = HP - enemy_entity_DMG;
             Interface[3][1] = to_string(HP);
             Life_all();// функция проверка на жизнь всех и игрока
@@ -195,8 +206,8 @@ void Move_enemy() {
                 enemy_x = hero_x - 1;
                 enemy_y = hero_y;
                 Map[map_number][enemy_y][enemy_x] = enemy_entity;
-        }
-        else if (Map[map_number][hero_y][hero_x + 1] != " # ") {
+            }
+            else if (Map[map_number][hero_y][hero_x + 1] != " # ") {
                 if (Map[map_number][enemy_y][enemy_x] != Map[map_number][li_y][li_x]) {
                     Map[map_number][enemy_y][enemy_x] = " . ";
                 }
@@ -204,8 +215,8 @@ void Move_enemy() {
                 enemy_x = hero_x + 1;
                 enemy_y = hero_y;
                 Map[map_number][enemy_y][enemy_x] = enemy_entity;
-        }
-        else if (Map[map_number][hero_y - 1][hero_x] != " # ") {
+            }
+            else if (Map[map_number][hero_y - 1][hero_x] != " # ") {
                 if (Map[map_number][enemy_y][enemy_x] != Map[map_number][li_y][li_x]) {
                     Map[map_number][enemy_y][enemy_x] = " . ";
                 }
@@ -213,8 +224,8 @@ void Move_enemy() {
                 enemy_y = hero_y - 1;
                 enemy_x = hero_x;
                 Map[map_number][enemy_y][enemy_x] = enemy_entity;
-        }
-        else if (Map[map_number][hero_y + 1][hero_x] != " # ") {
+            }
+            else if (Map[map_number][hero_y + 1][hero_x] != " # ") {
                 if (Map[map_number][enemy_y][enemy_x] != Map[map_number][li_y][li_x]) {
                     Map[map_number][enemy_y][enemy_x] = " . ";
                 }
@@ -222,10 +233,10 @@ void Move_enemy() {
                 enemy_y = hero_y + 1;
                 enemy_x = hero_x;
                 Map[map_number][enemy_y][enemy_x] = enemy_entity;
-        }
-        !enemy_moves;//переменная хода для моба
-        hero_moves;
-        Go_hero();// функция проверка на ходьбу игрока
+            }
+            !enemy_moves;//переменная хода для моба
+            hero_moves;
+            Go_hero();// функция проверка на ходьбу игрока
         }
     }
 }
@@ -246,7 +257,7 @@ void Move(char m) {
             if (map_number == 0) { map_number = 1;Map[map_number][hero_y][hero_x] = hero; }
             else if (map_number == 1) { map_number = 0;Map[map_number][hero_y][hero_x] = hero; }
             fight_for_enemy = false;
-            
+
         }
         //рядом враг и начать бой
         if (m == 'q' && (x_true || y_true)) {
@@ -270,15 +281,15 @@ void Move(char m) {
         }
 
         //Ходьба
-        if (m == 'w' && Map[map_number][hero_y + 1][hero_x] != " # " && Map[map_number][hero_y + 1][hero_x] != Map[map_number][enemy_y][enemy_x]) { //вверх
+        if (m == 'w' && Map[map_number][hero_y - 1][hero_x] != " # " && Map[map_number][hero_y - 1][hero_x] != Map[map_number][enemy_y][enemy_x]) { //вверх
             if (pick_loot_item == true || Map[map_number][hero_y][hero_x] != Map[map_number][li_y][li_x]) { Map[map_number][hero_y][hero_x] = " . "; }
             else { Map[map_number][hero_y][hero_x] = loot_item; }
             Map[map_number][--hero_y][hero_x] = hero;
             if (fight && hero_moves) {
-            enemy_moves = true;//переменная хода для моба
-            Move_enemy();//помогает мобу ходить
-            hero_moves = false;
-            Go_hero();// функция проверка на ходьбу игрока
+                enemy_moves = true;//переменная хода для моба
+                Move_enemy();//помогает мобу ходить
+                hero_moves = false;
+                Go_hero();// функция проверка на ходьбу игрока
             }
         }
         if (m == 's' && Map[map_number][hero_y + 1][hero_x] != " # " && Map[map_number][hero_y + 1][hero_x] != Map[map_number][enemy_y][enemy_x]) { //вниз
@@ -286,10 +297,10 @@ void Move(char m) {
             else { Map[map_number][hero_y][hero_x] = loot_item; }
             Map[map_number][++hero_y][hero_x] = hero;
             if (fight && hero_moves) {
-            enemy_moves = true;//переменная хода для моба
-            Move_enemy();//помогает мобу ходить
-            hero_moves = false;
-            Go_hero();// функция проверка на ходьбу игрока
+                enemy_moves = true;//переменная хода для моба
+                Move_enemy();//помогает мобу ходить
+                hero_moves = false;
+                Go_hero();// функция проверка на ходьбу игрока
             }
         }
         if (m == 'a' && Map[map_number][hero_y][hero_x - 1] != " # " && Map[map_number][hero_y][hero_x - 1] != Map[map_number][enemy_y][enemy_x]) { //влево
@@ -297,10 +308,10 @@ void Move(char m) {
             else { Map[map_number][hero_y][hero_x] = loot_item; }
             Map[map_number][hero_y][--hero_x] = hero;
             if (fight && hero_moves) {
-            enemy_moves = true;//переменная хода для моба
-            Move_enemy();//помогает мобу ходить
-            hero_moves = false;
-            Go_hero();// функция проверка на ходьбу игрока
+                enemy_moves = true;//переменная хода для моба
+                Move_enemy();//помогает мобу ходить
+                hero_moves = false;
+                Go_hero();// функция проверка на ходьбу игрока
             }
         }
         if (m == 'd' && Map[map_number][hero_y][hero_x + 1] != " # " && Map[map_number][hero_y][hero_x + 1] != Map[map_number][enemy_y][enemy_x]) { //вправо
@@ -308,22 +319,20 @@ void Move(char m) {
             else { Map[map_number][hero_y][hero_x] = loot_item; }
             Map[map_number][hero_y][++hero_x] = hero;
             if (fight && hero_moves) {
-            enemy_moves = true;//переменная хода для моба
-            Move_enemy();//помогает мобу ходить
-            hero_moves = false;
-            Go_hero();// функция проверка на ходьбу игрока
+                enemy_moves = true;//переменная хода для моба
+                Move_enemy();//помогает мобу ходить
+                hero_moves = false;
+                Go_hero();// функция проверка на ходьбу игрока
             }
         }
-        
     }
-    
+
     //кнопка для доп.инф.
     if (m == 'i') {
         if (debug == false) { debug = true; }
-        else{ debug = false; }
+        else { debug = false; }
     }
 }
-
 
 // отображения инвентаря
 void Render_Invert() {
@@ -339,14 +348,14 @@ void Render_Invert() {
 // что видит игрок
 int main() {
     setlocale(LC_ALL, "ru");
+    get_name();
     Map[map_number][li_y][li_x] = loot_item;
-    Move_enemy();
     Map[map_number][enemy_y][enemy_x] = enemy_entity;
     while (true) {
         system("cls");
         Map[map_number][Cyrllius_y][Cyrllius_x] = Cyrllius;
         if (life == false) { Map[map_number][hero_y][hero_x] = "₽";  return 0; }
-        if (Map[map_number][hero_y][hero_x] == Map[map_number][Cyrllius_y][Cyrllius_x]) { for (int i = 10; i > 0; i-- ) { if (Map[map_number][hero_y + 1][hero_x] != " # ") { ++hero_y; }} }// толчок
+        if (Map[map_number][hero_y][hero_x] == Map[map_number][Cyrllius_y][Cyrllius_x]) { for (int i = 10; i > 0; i--) { if (Map[map_number][hero_y + 1][hero_x] != " # ") { ++hero_y; } } }// толчок
         Map[map_number][hero_y][hero_x] = hero;
         Render_map();
         Render_Invert();
@@ -356,5 +365,6 @@ int main() {
         cin >> f;
         if (f == '0') { break; }
         else { Move(f); }
+        Move_enemy();
     }
 }
