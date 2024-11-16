@@ -109,7 +109,7 @@ void Life_all() {
     else { life = true; }
     if (enemy_entity_HP < 1) { enemy_life = false;fight_for_enemy = false;fight = false; }
     else { enemy_life = true; }
-    if (enemy_entity_HP > 99){Interface_enemy[3][2] = "       ";}
+    if (enemy_entity_HP > 99) { Interface_enemy[3][2] = "       "; }
     else if (enemy_entity_HP > 9) { Interface_enemy[3][2] = "        "; }
 }
 
@@ -129,10 +129,10 @@ void Render_map() {
                 else { cout << Interface_enemy[i][g]; }
             }
         }
-        if (fight == false && fight_for_enemy == false &&(i != 0 && i != 5)) { cout << "#"; } //глиномесю
+        if (fight == false && fight_for_enemy == false && (i != 0 && i != 5)) { cout << "#"; } //глиномесю
         if (fight == false && fight_for_enemy == false && (i == 0 || i == 5)) { cout << " #"; } //глиномесю
-            cout << endl;
-        
+        cout << endl;
+
     }
 }
 
@@ -258,7 +258,7 @@ void Move_enemy() {
                 Map[0][enemy_y][enemy_x] = enemy_entity;
             }
         }
-        
+
         enemy_moves = false;//переменная хода для моба
 
     }
@@ -284,7 +284,6 @@ void Move(char m) {
             fight_for_enemy = false;
 
         }
-        if (m == 'u') { hitcing(); }
         //рядом враг и начать бой
         if (m == 'q' && (x_true || y_true)) {
             if (fight == false) {
@@ -309,7 +308,7 @@ void Move(char m) {
         }
 
         //рядом C (секрет)
-        if (m == 'c' && brutality_c == false) {
+        if (m == 'c' && brutality_c == false && Cyrllius_life == true) {
             Map[map_number][hero_y][hero_x] = " . ";
             hero_y = Cyrllius_y + 1;
             hero_x = Cyrllius_x;
@@ -399,37 +398,40 @@ int main() {
     while (true) {
         if (pick_loot_item == true) { loot_item = " . "; }
         system("cls");
-        Map[map_number][Cyrllius_y][Cyrllius_x] = Cyrllius;
+        if (Cyrllius_life == true) {
+            Map[map_number][Cyrllius_y][Cyrllius_x] = Cyrllius;
+        }
+        else { Map[0][Cyrllius_y][Cyrllius_x] = Cyrllius;Map[1][Cyrllius_y][Cyrllius_x] = " . "; }
         if (life == false) { Map[map_number][hero_y][hero_x] = "₽";  return 0; }
         //анимация
         if (brutality_c == true) {
-        Map[map_number][hero_y][hero_x] = " . ";
-        Sleep(500);
-        anime();
-        Map[map_number][hero_y][hero_x] = hero;
-        Sleep(1000);
-        anime();
-        Map[map_number][hero_y][hero_x] = " . ";
-        hero_x = Cyrllius_x + 1;
-        hero_y = Cyrllius_y;
-        Map[map_number][hero_y][hero_x] = hero;
-        Sleep(20);
-        anime();;
-        Map[map_number][hero_y][hero_x] = " . ";
-        hero_x = hero_x + 1;Map[map_number][hero_y][hero_x] = hero;
-        Sleep(50);
-        anime();;
-        Map[map_number][hero_y][hero_x - 1] = "<--";
-        Sleep(100);
-        anime();
-        Map[map_number][hero_y][hero_x] = " . ";
-        hero_x = hero_x - 1;
-        Map[map_number][hero_y][hero_x] = hero;
-        Map[map_number][Cyrllius_y][Cyrllius_x] = "<С-";
-        Cyrllius = "<С-";
-        Cyrllius_life = false;
-        system("cls");
-        brutality_c = false;
+            Map[map_number][hero_y][hero_x] = " . ";
+            Sleep(500);
+            anime();
+            Map[map_number][hero_y][hero_x] = hero;
+            Sleep(1000);
+            anime();
+            Map[map_number][hero_y][hero_x] = " . ";
+            hero_x = Cyrllius_x + 1;
+            hero_y = Cyrllius_y;
+            Map[map_number][hero_y][hero_x] = hero;
+            Sleep(20);
+            anime();;
+            Map[map_number][hero_y][hero_x] = " . ";
+            hero_x = hero_x + 1;Map[map_number][hero_y][hero_x] = hero;
+            Sleep(50);
+            anime();;
+            Map[map_number][hero_y][hero_x - 1] = "<--";
+            Sleep(100);
+            anime();
+            Map[map_number][hero_y][hero_x] = " . ";
+            hero_x = hero_x - 1;
+            Map[map_number][hero_y][hero_x] = hero;
+            Map[map_number][Cyrllius_y][Cyrllius_x] = "<С-";
+            Cyrllius = "<С-";
+            Cyrllius_life = false;
+            system("cls");
+            brutality_c = false;
         }//конец анимации
         if (Map[map_number][hero_y][hero_x] == Map[map_number][Cyrllius_y][Cyrllius_x] && Cyrllius_life == true) { for (int i = 10; i > 0; i--) { if (Map[map_number][hero_y + 1][hero_x] != " # ") { ++hero_y; } } }// толчок
         Map[map_number][hero_y][hero_x] = hero;
