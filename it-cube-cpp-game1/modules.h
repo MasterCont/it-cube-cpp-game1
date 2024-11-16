@@ -2,69 +2,87 @@
 
 using namespace std;
 
-// Создаём некоторую информацию о нашем приложении
+// РЎРѕР·РґР°С‘Рј РЅРµРєРѕС‚РѕСЂСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РЅР°С€РµРј РїСЂРёР»РѕР¶РµРЅРёРё
 class Game {
 public:
-    const string version = "0.0.8";
+    const string version = "0.0.9";
     const string name = "@it_cube_cpp_game1";
     const string author = "MasterCont";
     const string git = "https://github.com/MasterCont/it-cube-cpp-game1.git";
-    bool debug = false; // если активна, то отображаем раскладку
+    bool debug = false; // РµСЃР»Рё Р°РєС‚РёРІРЅР°, С‚Рѕ РѕС‚РѕР±СЂР°Р¶Р°РµРј СЂР°СЃРєР»Р°РґРєСѓ
+    bool over = false; // Р—Р°РєРѕРЅС‡РµРЅР° Р»Рё РёРіСЂР°
 };
 
-// Создаём игрока
+// РЎРѕР·РґР°С‘Рј РёРіСЂРѕРєР°
 class Player {
 public:
-    string name; // Создаём переменную, в котором запишем имя игрока
-    string className = "@player_class_name"; // Создаём переменную, в котором записываем "класс" игрока
+    string name; // РЎРѕР·РґР°С‘Рј РїРµСЂРµРјРµРЅРЅСѓСЋ, РІ РєРѕС‚РѕСЂРѕРј Р·Р°РїРёС€РµРј РёРјСЏ РёРіСЂРѕРєР°
+    string className = "@player_class_name"; // РЎРѕР·РґР°С‘Рј РїРµСЂРµРјРµРЅРЅСѓСЋ, РІ РєРѕС‚РѕСЂРѕРј Р·Р°РїРёСЃС‹РІР°РµРј "РєР»Р°СЃСЃ" РёРіСЂРѕРєР°
     string player_invent[6] = { " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 " };
-    int pos_x = 2, pos_y = 2; // Прописываем спавн игрока на координатах по x и y
-    int hp = 10; // Создаём хп игроку
+    int pos_x = 2, pos_y = 2; // РџСЂРѕРїРёСЃС‹РІР°РµРј СЃРїР°РІРЅ РёРіСЂРѕРєР° РЅР° РєРѕРѕСЂРґРёРЅР°С‚Р°С… РїРѕ x Рё y
+    int hp = 20; // РЎРѕР·РґР°С‘Рј С…Рї РёРіСЂРѕРєСѓ
     int dmg = 2;
     int inv_i = 0;
-    bool moves = false; // Можешь ли игрок ходить независимо от боя
-    bool life = true; // Жив ли игрок
+    bool moves = false; // РњРѕР¶РµС€СЊ Р»Рё РёРіСЂРѕРє С…РѕРґРёС‚СЊ РЅРµР·Р°РІРёСЃРёРјРѕ РѕС‚ Р±РѕСЏ
+    bool life = true; // Р–РёРІ Р»Рё РёРіСЂРѕРє
+
+    bool hpHas() {
+        bool notHave = hp <= 0;
+        if (notHave) life = false;
+        return notHave ? false : true;
+    }
 };
 
-// Создаём противника (моба) игрока 
+// РЎРѕР·РґР°С‘Рј РїСЂРѕС‚РёРІРЅРёРєР° (РјРѕР±Р°) РёРіСЂРѕРєР° 
 class Enemy {
 public:
-    string designation = " A "; // Создаём интерфейс моба
-    int hp = 20; // Здоровья моба
-    int dmg = 2; // Урон моба
-    int pos_x = 4, pos_y = 3; // Позиция спавна моба
-    bool fight = false; // Определение боя для моба
-    bool moves = true; // Может ли моб передвигаться
-    bool life = true; // Жив ли моб
+    string designation = " A "; // РЎРѕР·РґР°С‘Рј РёРЅС‚РµСЂС„РµР№СЃ РјРѕР±Р°
+    int hp = 10; // Р—РґРѕСЂРѕРІСЊСЏ РјРѕР±Р°
+    int dmg = 2; // РЈСЂРѕРЅ РјРѕР±Р°
+    int pos_x = 4, pos_y = 3; // РџРѕР·РёС†РёСЏ СЃРїР°РІРЅР° РјРѕР±Р°
+    bool fight = false; // РћРїСЂРµРґРµР»РµРЅРёРµ Р±РѕСЏ РґР»СЏ РјРѕР±Р°
+    bool moves = true; // РњРѕР¶РµС‚ Р»Рё РјРѕР± РїРµСЂРµРґРІРёРіР°С‚СЊСЃСЏ
+    bool life = true; // Р–РёРІ Р»Рё РјРѕР±
+
+    bool hpHas() {
+        bool notHave = hp <= 0;
+        if (notHave) {
+            life = false;
+            pos_x = 0;
+            pos_y = 0;
+        }
+        return notHave ? false : true;
+    }
 };
 
-// Создаём координаты спавна для каждого объекта
+// РЎРѕР·РґР°С‘Рј РєРѕРѕСЂРґРёРЅР°С‚С‹ СЃРїР°РІРЅР° РґР»СЏ РєР°Р¶РґРѕРіРѕ РѕР±СЉРµРєС‚Р°
 class Spawn {
 public:
-    int li_pos_y = 4, li_pos_x = 4; // Прописываем спавн действия на координатах по x и y
+    int li_pos_y = 4, li_pos_x = 4; // РџСЂРѕРїРёСЃС‹РІР°РµРј СЃРїР°РІРЅ РґРµР№СЃС‚РІРёСЏ РЅР° РєРѕРѕСЂРґРёРЅР°С‚Р°С… РїРѕ x Рё y
 };
 
 class Designations {
 public:
-    const string loot_item = " * "; // Создаём обозначение действия
-    const string border = " # "; // Создаём обозначение границ
-    const string player = " P "; // Создаём обозначение игрока
-    const string space = " . "; // Создаём обозначение пространства
-    const string enemy = " A "; // Создаём обозначение противника (моба)
+    const string loot_item = " * "; // РЎРѕР·РґР°С‘Рј РѕР±РѕР·РЅР°С‡РµРЅРёРµ РґРµР№СЃС‚РІРёСЏ
+    const string border = " # "; // РЎРѕР·РґР°С‘Рј РѕР±РѕР·РЅР°С‡РµРЅРёРµ РіСЂР°РЅРёС†
+    const string player = " P "; // РЎРѕР·РґР°С‘Рј РѕР±РѕР·РЅР°С‡РµРЅРёРµ РёРіСЂРѕРєР°
+    const string space = " . "; // РЎРѕР·РґР°С‘Рј РѕР±РѕР·РЅР°С‡РµРЅРёРµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР°
+    const string enemy = " A "; // РЎРѕР·РґР°С‘Рј РѕР±РѕР·РЅР°С‡РµРЅРёРµ РїСЂРѕС‚РёРІРЅРёРєР° (РјРѕР±Р°)
 };
 
-extern bool pick_loot_item = false; // Поднят ли предмет игроком
+extern bool pick_loot_item = false; // РџРѕРґРЅСЏС‚ Р»Рё РїСЂРµРґРјРµС‚ РёРіСЂРѕРєРѕРј
 
-// Параметры игры для игрока
-extern bool fight = false; // Идёт бой для игрока или нет
-extern bool can_go = true; // Может ли передвигаться игрок
+// РџР°СЂР°РјРµС‚СЂС‹ РёРіСЂС‹ РґР»СЏ РёРіСЂРѕРєР°
+extern bool fight = false; // РРґС‘С‚ Р±РѕР№ РґР»СЏ РёРіСЂРѕРєР° РёР»Рё РЅРµС‚
+extern bool can_go = true; // РњРѕР¶РµС‚ Р»Рё РїРµСЂРµРґРІРёРіР°С‚СЊСЃСЏ РёРіСЂРѕРє
+extern bool more_by_coordinate = false; // РџРѕР»СѓС‡РµРЅРёРµ СЂР°РЅРґРѕРјРЅРѕРіРѕ bool С‡РёСЃР»Р° РґР»СЏ РїРµСЂРµРґРІРёР¶РµРЅРёСЏ РјРѕР±Р° РїРѕ РґРµР№СЃС‚РІРёСЋ РёРіСЂРѕРєР°
 
-extern int map_number = 0; // Указываем, что по умолчанию загружается первая (нулевая по программе) карта
-extern const int maps_size = 6; // Создаём размер барьера
+extern int map_number = 0; // РЈРєР°Р·С‹РІР°РµРј, С‡С‚Рѕ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ Р·Р°РіСЂСѓР¶Р°РµС‚СЃСЏ РїРµСЂРІР°СЏ (РЅСѓР»РµРІР°СЏ РїРѕ РїСЂРѕРіСЂР°РјРјРµ) РєР°СЂС‚Р°
+extern const int maps_size = 6; // РЎРѕР·РґР°С‘Рј СЂР°Р·РјРµСЂ Р±Р°СЂСЊРµСЂР°
 
-Player player; // Создаём переменную игрока для взаимодействия с игроком
-Enemy enemy; // Создаём свойства моба
-Spawn spawn; // Создаём переменную для взаимодействия со спавнами объектов
+Player player; // РЎРѕР·РґР°С‘Рј РїРµСЂРµРјРµРЅРЅСѓСЋ РёРіСЂРѕРєР° РґР»СЏ РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёСЏ СЃ РёРіСЂРѕРєРѕРј
+Enemy enemy; // РЎРѕР·РґР°С‘Рј СЃРІРѕР№СЃС‚РІР° РјРѕР±Р°
+Spawn spawn; // РЎРѕР·РґР°С‘Рј РїРµСЂРµРјРµРЅРЅСѓСЋ РґР»СЏ РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёСЏ СЃРѕ СЃРїР°РІРЅР°РјРё РѕР±СЉРµРєС‚РѕРІ
 Designations designations;
 Game game;
 
@@ -73,7 +91,7 @@ extern string space = designations.space;
 extern string Maps[][maps_size][maps_size]{
 
 
-    { // Map 0 - Создаём карту 1
+    { // Map 0 - РЎРѕР·РґР°С‘Рј РєР°СЂС‚Сѓ 1
         {border, border, border, border, border, border},
         {border, space , space , space , space , border},
         {border, space , space , space , space , border},
@@ -82,7 +100,7 @@ extern string Maps[][maps_size][maps_size]{
         {border, border, border, border, border, border}
     },
 
-    { // Map 1 - Создаём карту 2
+    { // Map 1 - РЎРѕР·РґР°С‘Рј РєР°СЂС‚Сѓ 2
         {border, border, border, "   ", "   ", border},
         {border, space , space , space , space , border},
         {border, space , space , space , space , border},
@@ -91,7 +109,7 @@ extern string Maps[][maps_size][maps_size]{
         {border, border, border, border, "   ", "   "}
     },
 
-    { // Map 2 - Создаём карту 3
+    { // Map 2 - РЎРѕР·РґР°С‘Рј РєР°СЂС‚Сѓ 3
         {border, border, border, "   ", "   ", border},
         {"   ", space , space , space , space , border},
         {"   ", space , space , space , space , border},
@@ -102,12 +120,22 @@ extern string Maps[][maps_size][maps_size]{
 
 };
 
-// Фукнции для получения разрешения действий, связанных с мобом
+// Р¤СѓРєРЅС†РёРё РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ СЂР°Р·СЂРµС€РµРЅРёСЏ РґРµР№СЃС‚РІРёР№, СЃРІСЏР·Р°РЅРЅС‹С… СЃ РјРѕР±РѕРј
 bool getActionOnEnemyX(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y);
 bool getActionOnEnemyY(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y);
+bool getActionOnEnemyLeft(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y);
+bool getActionOnEnemyRight(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y);
+bool getActionOnEnemyUp(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y);
+bool getActionOnEnemyDown(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y);
 
-// Функция для установки заголовка терминала Windows
+// Р¤СѓРЅРєС†РёСЏ РґР»СЏ СѓСЃС‚Р°РЅРѕРІРєРё Р·Р°РіРѕР»РѕРІРєР° С‚РµСЂРјРёРЅР°Р»Р° Windows
 void setWindowsConsoleTitle(string title);
 
-// Функция для вывода окна запуска программы
+// Р¤СѓРЅРєС†РёСЏ РґР»СЏ РІС‹РІРѕРґР° РѕРєРЅР° Р·Р°РїСѓСЃРєР° РїСЂРѕРіСЂР°РјРјС‹
 void UI_Hello(string title, string version, string author, string git);
+
+// Р¤СѓРЅРєС†РёСЏ РґР»СЏ РІС‹РІРѕРґР° РѕРєРЅР° Р·Р°РІРµСЂС€РµРЅРёСЏ РїСЂРѕРіСЂР°РјРјС‹
+void UI_Bye();
+
+// Р¤СѓРЅРєС†РёСЏ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ СЂР°РЅРґРѕРјРЅРѕРіРѕ С‡РёСЃР»Р° РІ РґРёР°РїР°Р·РѕРЅРµ РѕС‚ min РґРѕ max
+int random(int min, int max);
