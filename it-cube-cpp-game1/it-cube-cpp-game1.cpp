@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <string>
+#include "modules.h";
 using namespace std;
 
 //массивы и переменные
@@ -259,6 +260,7 @@ void Move(char m) {
             fight_for_enemy = false;
 
         }
+        if (m = 'u') hitcing();
         //рядом враг и начать бой
         if (m == 'q' && (x_true || y_true)) {
             if (fight == false) {
