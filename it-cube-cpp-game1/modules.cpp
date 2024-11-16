@@ -4,7 +4,7 @@
 
 using namespace std;
 
-// Создаём некоторые "ответы" программы
+// вЂ”РѕР·РґР°Р„Рј РЅРµРєРѕС‚РѕСЂС‹Рµ "РѕС‚РІРµС‚С‹" РїСЂРѕРіСЂР°РјРјС‹
 class Responses {
 public:
     const string undefined = "Undefined";
@@ -12,7 +12,7 @@ public:
 
 Responses res;
 
-// Фукнции для получения разрешения действий, связанных с мобом
+// вЂСѓРєРЅС†РёРё РґР»В¤ РїРѕР»СѓС‡РµРЅРёВ¤ СЂР°Р·СЂРµС€РµРЅРёВ¤ РґРµР№СЃС‚РІРёР№, СЃРІВ¤Р·Р°РЅРЅС‹С… СЃ РјРѕР±РѕРј
 bool getActionOnEnemyX(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y) {
     return (enemy_pos_y == player_pos_y && (enemy_pos_x - 1 == player_pos_x || enemy_pos_x + 1 == player_pos_x));
 }
@@ -21,14 +21,32 @@ bool getActionOnEnemyY(int player_pos_x, int player_pos_y, int enemy_pos_x, int 
     return (enemy_pos_x == player_pos_x && (enemy_pos_y - 1 == player_pos_y || enemy_pos_y + 1 == player_pos_y));
 }
 
-// Функция для установки заголовка терминала Windows
+bool getActionOnEnemyLeft(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y) {
+    return (enemy_pos_y == player_pos_y && (enemy_pos_x + 1 == player_pos_x));
+}
+
+bool getActionOnEnemyRight(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y) {
+    return (enemy_pos_y == player_pos_y && (enemy_pos_x - 1 == player_pos_x));
+}
+
+bool getActionOnEnemyUp(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y) {
+    return (enemy_pos_x == player_pos_x && (enemy_pos_y + 1 == player_pos_y));
+}
+bool getActionOnEnemyDown(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y) {
+    return (enemy_pos_x == player_pos_x && (enemy_pos_y - 1 == player_pos_y));
+}
+
+
+
+
+// вЂСѓРЅРєС†РёВ¤ РґР»В¤ СѓСЃС‚Р°РЅРѕРІРєРё Р·Р°РіРѕР»РѕРІРєР° С‚РµСЂРјРёРЅР°Р»Р° Windows
 void setWindowsConsoleTitle(string title) {
     wstring wstr(title.begin(), title.end());
     const wchar_t* wstrPtr = wstr.c_str();
     SetConsoleTitle(wstrPtr);
 }
 
-// Функция для вывода окна запуска программы
+// вЂСѓРЅРєС†РёВ¤ РґР»В¤ РІС‹РІРѕРґР° РѕРєРЅР° Р·Р°РїСѓСЃРєР° РїСЂРѕРіСЂР°РјРјС‹
 void UI_Hello(string title = res.undefined, string version = res.undefined, string author = res.undefined, string git = res.undefined) {
     cout << "# # # # # # # # # # #" << endl;
     cout << "# Title: " << title << endl;
@@ -37,4 +55,19 @@ void UI_Hello(string title = res.undefined, string version = res.undefined, stri
     cout << "# Git: " << git << endl;
     cout << "# # # # # # # # # # #" << endl;
     cout << endl;
+}
+
+// вЂСѓРЅРєС†РёВ¤ РґР»В¤ РІС‹РІРѕРґР° РѕРєРЅР° Р·Р°РІРµСЂС€РµРЅРёВ¤ РїСЂРѕРіСЂР°РјРјС‹
+void UI_Bye() {
+    system("cls");
+    cout << "# # # # # # # # # # #" << endl;
+    cout << "#     Game over!    #" << endl;
+    cout << "# # # # # # # # # # #" << endl;
+    cout << endl;
+    system("pause");
+}
+
+// вЂСѓРЅРєС†РёВ¤ РґР»В¤ РїРѕР»СѓС‡РµРЅРёВ¤ СЂР°РЅРґРѕРјРЅРѕРіРѕ С‡РёСЃР»Р° РІ РґРёР°РїР°Р·РѕРЅРµ РѕС‚ min РґРѕ max
+int random(int min, int max) {
+    return rand() % max + min;
 }
