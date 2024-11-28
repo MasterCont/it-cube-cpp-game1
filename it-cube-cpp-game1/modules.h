@@ -1,11 +1,12 @@
 #pragma once
+#include <unordered_map>
 
 using namespace std;
 
 // Создаём некоторую информацию о нашем приложении
 class Game {
 public:
-    const string version = "0.0.9";
+    const string version = "0.1.0 reloaded";
     const string name = "@it_cube_cpp_game1";
     const string author = "MasterCont";
     const string git = "https://github.com/MasterCont/it-cube-cpp-game1.git";
@@ -33,62 +34,49 @@ public:
     }
 };
 
-// Создаём противника (моба) игрока 
-class Enemy {
-public:
-    string designation = " A "; // Создаём интерфейс моба
-    int hp = 10; // Здоровья моба
-    int dmg = 2; // Урон моба
-    int pos_x = 4, pos_y = 3; // Позиция спавна моба
-    bool fight = false; // Определение боя для моба
-    bool moves = true; // Может ли моб передвигаться
-    bool life = true; // Жив ли моб
-
-    bool hpHas() {
-        bool notHave = hp <= 0;
-        if (notHave) {
-            life = false;
-            pos_x = 0;
-            pos_y = 0;
-        }
-        return notHave ? false : true;
-    }
-};
-
 // Создаём координаты спавна для каждого объекта
 class Spawn {
 public:
-    int li_pos_y = 4, li_pos_x = 4; // Прописываем спавн действия на координатах по x и y
+    int action_pos_y = 4, action_pos_x = 4; // Прописываем спавн действия на координатах по x и y
 };
 
-class Designations {
+struct object {
+    int id;
+    string name;
+    string designation;
+};
+
+// Создаём список всех объектов на карте игры
+class Objects {
 public:
-    const string loot_item = " * "; // Создаём обозначение действия
-    const string border = " # "; // Создаём обозначение границ
-    const string player = " P "; // Создаём обозначение игрока
-    const string space = " . "; // Создаём обозначение пространства
-    const string enemy = " A "; // Создаём обозначение противника (моба)
+    const object _void = { 0, "void", " X " }; // Создаём обозначение пустого объекта
+    const object space = { 1, "space", " . " }; // Создаём обозначение пространства
+    const object border = { 2, "border", " # " }; // Создаём обозначение границ
+    const object action = { 3, "action", " * " }; // Создаём обозначение действия
+    const object player = { 4, "player", " P " }; // Создаём обозначение игрока
+    const object enemy = { 5, "enemy", " A " }; // Создаём обозначение противника (моба)
+
 };
 
-extern bool pick_loot_item = false; // Поднят ли предмет игроком
+
+bool pick_loot_item = false; // Поднят ли предмет игроком
 
 // Параметры игры для игрока
-extern bool fight = false; // Идёт бой для игрока или нет
-extern bool can_go = true; // Может ли передвигаться игрок
-extern bool more_by_coordinate = false; // Получение рандомного bool числа для передвижения моба по действию игрока
+bool fight = false; // Идёт бой для игрока или нет
+bool can_go = true; // Может ли передвигаться игрок
+bool more_by_coordinate = false; // Получение рандомного bool числа для передвижения моба по действию игрока
 
-extern int map_number = 0; // Указываем, что по умолчанию загружается первая (нулевая по программе) карта
-extern const int maps_size = 6; // Создаём размер барьера
+int map_number = 0; // Указываем, что по умолчанию загружается первая (нулевая по программе) карта
+const int maps_size = 6; // Создаём размер барьера
 
 Player player; // Создаём переменную игрока для взаимодействия с игроком
-Enemy enemy; // Создаём свойства моба
 Spawn spawn; // Создаём переменную для взаимодействия со спавнами объектов
-Designations designations;
 Game game;
+Objects objects;
 
-extern string border = designations.border;
-extern string space = designations.space;
-extern string Maps[][maps_size][maps_size]{
+object border = objects.border;
+object space = objects.space;
+object Maps[][maps_size][maps_size]{
 
 
     { // Map 0 - Создаём карту 1
@@ -101,24 +89,55 @@ extern string Maps[][maps_size][maps_size]{
     },
 
     { // Map 1 - Создаём карту 2
-        {border, border, border, "   ", "   ", border},
+        {border, border, border, space, space, border},
         {border, space , space , space , space , border},
         {border, space , space , space , space , border},
-        {"   ", space , space , space , space , border},
-        {border, space , space , space , space , "   "},
-        {border, border, border, border, "   ", "   "}
+        {space, space , space , space , space , border},
+        {border, space , space , space , space , space},
+        {border, border, border, border, space, space}
     },
 
     { // Map 2 - Создаём карту 3
-        {border, border, border, "   ", "   ", border},
-        {"   ", space , space , space , space , border},
-        {"   ", space , space , space , space , border},
+        {border, border, border, space, space, border},
+        {space, space , space , space , space , border},
+        {space, space , space , space , space , border},
         {border, space , space , space , space , border},
         {border, space , space , space , space, border},
-        {border, border, border, border, "   ", border}
+        {border, border, border, border, space, border}
     }
 
 };
+
+// Создаём противника (моба) игрока 
+class Enemy {
+public:
+    string designation = " A "; // Создаём интерфейс моба
+    int hp = 10; // Здоровья моба
+    int dmg = 2; // Урон моба
+    int pos_x = 3, pos_y = 3; // Позиция спавна моба
+    bool fight = false; // Определение боя для моба
+    bool moves = true; // Может ли моб передвигаться
+    bool life = false; // Жив ли моб
+
+    bool hpHas(int map_number) {
+        bool notHave = (hp <= 0);
+        if (notHave) {
+            life = false;
+            Maps[map_number][pos_y][pos_x] = objects.space;
+            pos_x = -1;
+            pos_y = -1;
+        }
+        return notHave ? false : true;
+    }
+
+    bool initialization() {
+        life = true;
+        Maps[0][pos_y][pos_x] = objects.enemy;
+        return life ? true : false;
+    }
+};
+
+Enemy enemy; // Создаём свойства моба
 
 // Фукнции для получения разрешения действий, связанных с мобом
 bool getActionOnEnemyX(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y);
