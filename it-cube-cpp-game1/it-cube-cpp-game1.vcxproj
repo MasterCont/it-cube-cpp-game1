@@ -132,7 +132,12 @@
     <ClCompile Include="modules.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="enemy.h" />
+    <ClInclude Include="maps.h" />
     <ClInclude Include="modules.h" />
+    <ClInclude Include="objects.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="spawn.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Исходные файлы\entities">
+      <UniqueIdentifier>{b348739f-6ed3-4e61-a9c6-2507cc5511bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="it-cube-cpp-game1.cpp">
@@ -24,6 +27,21 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="modules.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="objects.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>Исходные файлы\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>Исходные файлы\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="maps.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="spawn.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>

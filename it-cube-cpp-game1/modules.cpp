@@ -1,7 +1,8 @@
 #include <iostream>
 #include <tchar.h>
 #include <Windows.h>
-
+#include <unordered_map>
+#include <string>
 using namespace std;
 
 // —оздаЄм некоторые "ответы" программы
@@ -11,32 +12,6 @@ public:
 };
 
 Responses res;
-
-// ‘укнции дл¤ получени¤ разрешени¤ действий, св¤занных с мобом
-bool getActionOnEnemyX(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y) {
-    return (enemy_pos_y == player_pos_y && (enemy_pos_x - 1 == player_pos_x || enemy_pos_x + 1 == player_pos_x));
-}
-
-bool getActionOnEnemyY(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y) {
-    return (enemy_pos_x == player_pos_x && (enemy_pos_y - 1 == player_pos_y || enemy_pos_y + 1 == player_pos_y));
-}
-
-bool getActionOnEnemyLeft(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y) {
-    return (enemy_pos_y == player_pos_y && (enemy_pos_x + 1 == player_pos_x));
-}
-
-bool getActionOnEnemyRight(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y) {
-    return (enemy_pos_y == player_pos_y && (enemy_pos_x - 1 == player_pos_x));
-}
-
-bool getActionOnEnemyUp(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y) {
-    return (enemy_pos_x == player_pos_x && (enemy_pos_y + 1 == player_pos_y));
-}
-bool getActionOnEnemyDown(int player_pos_x, int player_pos_y, int enemy_pos_x, int enemy_pos_y) {
-    return (enemy_pos_x == player_pos_x && (enemy_pos_y - 1 == player_pos_y));
-}
-
-
 
 
 // ‘ункци¤ дл¤ установки заголовка терминала Windows
@@ -70,4 +45,26 @@ void UI_Bye() {
 // ‘ункци¤ дл¤ получени¤ рандомного числа в диапазоне от min до max
 int random(int min, int max) {
     return rand() % max + min;
+}
+
+struct userData {
+    string name;
+};
+
+// Функция для записи данных в программу
+userData getUserData() {
+
+    // Добавляем персонажу имя/название
+    int count = 16;
+    string name;
+
+    cout << "# Введите имя вашего персонажа: ";
+    cin >> name;
+
+    if (name.size() <= count) return { name };
+    else {
+        cout << endl;
+        cout << "Допустимое имя персонажа стостоит из " + to_string(count) + " символов!" << endl;
+        getUserData();
+    }
 }
