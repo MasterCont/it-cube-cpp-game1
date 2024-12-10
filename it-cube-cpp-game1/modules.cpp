@@ -30,6 +30,11 @@ void UI_Hello(string title = res.undefined, string version = res.undefined, stri
     cout << "# Git: " << git << endl;
     cout << "# # # # # # # # # # #" << endl;
     cout << endl;
+    cout << "# # # # # # # # # # #" << endl;
+    cout << "# Control buttons: " << endl;
+    cout << "# DEBUG: I | K/L" << endl;
+    cout << "# # # # # # # # # # #" << endl;
+    cout << endl;
 }
 
 // вЂСѓРЅРєС†РёВ¤ РґР»В¤ РІС‹РІРѕРґР° РѕРєРЅР° Р·Р°РІРµСЂС€РµРЅРёВ¤ РїСЂРѕРіСЂР°РјРјС‹
@@ -61,10 +66,31 @@ userData getUserData() {
     cout << "# Р’РІРµРґРёС‚Рµ РёРјСЏ РІР°С€РµРіРѕ РїРµСЂСЃРѕРЅР°Р¶Р°: ";
     cin >> name;
 
-    if (name.size() <= count) return { name };
+    if (name.size() <= count && name.size() > 0) return { name };
     else {
         cout << endl;
         cout << "Р”РѕРїСѓСЃС‚РёРјРѕРµ РёРјСЏ РїРµСЂСЃРѕРЅР°Р¶Р° СЃС‚РѕСЃС‚РѕРёС‚ РёР· " + to_string(count) + " СЃРёРјРІРѕР»РѕРІ!" << endl;
         getUserData();
     }
+}
+
+void clearScreen() {
+    // Получаем хендл для стандартного вывода
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    // Получаем размеры консоли
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(hConsole, &csbi);
+
+    // Определяем размер консольного буфера
+    DWORD cells = csbi.srWindow.Right * csbi.srWindow.Bottom;
+    DWORD written;
+    COORD coord = { 0, 0 };
+
+    // Заполняем весь экран пробелами
+    FillConsoleOutputCharacter(hConsole, ' ', cells, coord, &written);
+    // Устанавливаем цвет текста, если требуется
+    FillConsoleOutputAttribute(hConsole, csbi.wAttributes, cells, coord, &written);
+
+    // Перемещаем курсор в верхний левый угол
+    SetConsoleCursorPosition(hConsole, coord);
 }

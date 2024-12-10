@@ -1,20 +1,33 @@
 #pragma once
 #include <iostream>
+#include <unordered_map>
 
 using namespace std;
 
 // Создаём некоторую информацию о нашем приложении
 class Game {
 public:
-    const string version = "0.1.1";
+
+    struct Debug {
+
+        struct Pages {
+            int page;
+            int max;
+        };
+
+        bool active = false;
+        Pages pages;
+    };
+
+    const string version = "0.1.2";
     const string name = "@it_cube_cpp_game1";
     const string author = "MasterCont";
     const string git = "https://github.com/MasterCont/it-cube-cpp-game1.git";
-    bool debug = false; // если активна, то отображаем раскладку
-    bool over = false; // Закончена ли игра
+    int map_number = 0; // ���������, ��� �� ��������� ����������� ������ (������� �� ���������) �����
+    Debug debug; // если активна, то отображаем раскладку
+    bool over = false; // Z`Закончена ли игра
     bool ui_update_permission = true; // Можно ли обновлять интерфейс игры (избавляет от постоянного обновления интерфейса, если действие цикличное и бесполезно)
 };
-
 
 bool pick_loot_item = false; // Поднят ли предмет игроком
 
@@ -45,3 +58,5 @@ struct userData {
 
 // Функция для записи данных в программу
 userData getUserData();
+
+void clearScreen();
