@@ -16,6 +16,12 @@
     <Filter Include="Исходные файлы\entities">
       <UniqueIdentifier>{b348739f-6ed3-4e61-a9c6-2507cc5511bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Исходные файлы\assets">
+      <UniqueIdentifier>{397ff504-8872-446d-afc1-d0dca9169647}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\assets\sounds">
+      <UniqueIdentifier>{8316d8fb-cd14-413e-8ec1-cef3a6e565e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="it-cube-cpp-game1.cpp">
@@ -44,5 +50,73 @@
     <ClInclude Include="spawn.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="music_background0.wav">
+      <Filter>Файлы ресурсов</Filter>
+    </Media>
+    <Media Include="sound_player_move.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_player_locationTransition.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_enemy_getDmg0.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_enemy_getDmg1.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_enemy_getDmg2.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_enemy_death0.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_enemy_death1.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_enemy_death2.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="music_end_gloomyman.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_bruh.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_end_over.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_end_finished.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_start_hello0.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_start_hello1.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_start_hello2.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_debug0.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_debug1.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_debug2.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_debug_open.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_debug_close.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
+    <Media Include="sound_start_getData.wav">
+      <Filter>Исходные файлы\assets\sounds</Filter>
+    </Media>
   </ItemGroup>
 </Project>

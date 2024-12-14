@@ -3,6 +3,8 @@
 #include <Windows.h>
 #include <unordered_map>
 #include <string>
+#include <vector>
+
 using namespace std;
 
 // вЂ”РѕР·РґР°Р„Рј РЅРµРєРѕС‚РѕСЂС‹Рµ "РѕС‚РІРµС‚С‹" РїСЂРѕРіСЂР°РјРјС‹
@@ -21,30 +23,83 @@ void setWindowsConsoleTitle(string title) {
     SetConsoleTitle(wstrPtr);
 }
 
+void outputToCenter(const std::vector<std::string>& messages, int consoleWidth = 0, int consoleHeight = 0) {
+    // Получаем дескриптор консоли
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    // Получаем размеры консоли
+    CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+    GetConsoleScreenBufferInfo(hConsole, &bufferInfo);
+
+    if (consoleWidth == 0) consoleWidth = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1;
+    if (consoleHeight == 0) consoleHeight = bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1;
+
+    // Очищаем консоль перед выводом новых сообщений
+    system("cls");
+
+    // Выводим все сообщения на экран
+    for (size_t i = 0; i < messages.size(); ++i) {
+        const std::string& text = messages[i];
+
+        // Вычисляем отступы для центрирования текста
+        int textLength = text.length();
+        int x = (consoleWidth / 2) - (textLength / 2);
+        int y = consoleHeight / 4 + i; // Изменяем y, чтобы текст не накладывался
+
+        // Устанавливаем курсор в нужное положение
+        COORD coord = { static_cast<SHORT>(x), static_cast<SHORT>(y) };
+        SetConsoleCursorPosition(hConsole, coord);
+
+        // Выводим текст
+        std::cout << text;
+    }
+}
+
+
 // вЂСѓРЅРєС†РёВ¤ РґР»В¤ РІС‹РІРѕРґР° РѕРєРЅР° Р·Р°РїСѓСЃРєР° РїСЂРѕРіСЂР°РјРјС‹
-void UI_Hello(string title = res.undefined, string version = res.undefined, string author = res.undefined, string git = res.undefined) {
-    cout << "# # # # # # # # # # #" << endl;
-    cout << "# Title: " << title << endl;
-    cout << "# Version: " << version << endl;
-    cout << "# Author: " << author << endl;
-    cout << "# Git: " << git << endl;
-    cout << "# # # # # # # # # # #" << endl;
-    cout << endl;
-    cout << "# # # # # # # # # # #" << endl;
-    cout << "# Control buttons: " << endl;
-    cout << "# DEBUG: I | K/L" << endl;
-    cout << "# # # # # # # # # # #" << endl;
-    cout << endl;
+bool UI_Hello(string title = res.undefined, string version = res.undefined, string author = res.undefined, string git = res.undefined) {
+
+    std::vector<std::string> messages = {
+        "# # # # # # # # # # #\n",
+        "# Title: " + title + "\n",
+        "# Version: " + version + "\n",
+        "# Author: " + author + "\n",
+        "# Git: " + git + "\n",
+        "# # # # # # # # # # #\n",
+        "\n",
+        "# # # # # # # # # # #\n",
+        "# Control buttons : \n",
+        "# DEBUG: I | K/L\n",
+        "# # # # # # # # # # #\n",
+        "\n\n\n",
+        "# # # # # # # # # # #\n",
+        "Press ENTER to start.\n",
+        "# # # # # # # # # # #\n"
+    };
+
+    outputToCenter(messages);
+    system("set /p dummy=");
+    
+    return true;
 }
 
 // вЂСѓРЅРєС†РёВ¤ РґР»В¤ РІС‹РІРѕРґР° РѕРєРЅР° Р·Р°РІРµСЂС€РµРЅРёВ¤ РїСЂРѕРіСЂР°РјРјС‹
-void UI_Bye() {
+void UI_Bye(bool successfully = false, string reason = "") {
     system("cls");
-    cout << "# # # # # # # # # # #" << endl;
-    cout << "#     Game over!    #" << endl;
-    cout << "# # # # # # # # # # #" << endl;
-    cout << endl;
-    system("pause");
+
+    std::vector<std::string> messages = {
+        "# # # # # # # # # # #\n",
+        successfully ? "#     The game has been successfully completed!    #\n" : "     Game over!    \n",
+        reason.length() > 0 ? reason + "\n" : "",
+        "# # # # # # # # # # #\n",
+        "\n\n\n",
+        "# # # # # # # # # # #\n",
+        "Press ENTER to exit.\n",
+        "# # # # # # # # # # #\n"
+    };
+
+    outputToCenter(messages);
+
+    system("set /p dummy=");
 }
 
 // вЂСѓРЅРєС†РёВ¤ РґР»В¤ РїРѕР»СѓС‡РµРЅРёВ¤ СЂР°РЅРґРѕРјРЅРѕРіРѕ С‡РёСЃР»Р° РІ РґРёР°РїР°Р·РѕРЅРµ РѕС‚ min РґРѕ max
@@ -93,4 +148,9 @@ void clearScreen() {
 
     // Перемещаем курсор в верхний левый угол
     SetConsoleCursorPosition(hConsole, coord);
+}
+
+LPCSTR stringToLPCSTR(string value) {
+    LPCSTR lpcstr = value.c_str();
+    return lpcstr;
 }
