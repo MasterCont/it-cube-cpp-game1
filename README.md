@@ -14,3 +14,6 @@ https://github.com/MasterCont/it-cube-cpp-game1/releases
 3. Run the executable file (at the time of version 0.0.8 - it-cube-cpp-game1.exe )
 
 ```
+## Demo
+
+<iframe width="720" height="405" src="https://rutube.ru/play/embed/1f5e1cb7305b830371a5023e3f3dfaf9" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
