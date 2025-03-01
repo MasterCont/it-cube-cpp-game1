@@ -1,7 +1,7 @@
 #pragma once
 #include "objects.h";
 
-const int maps_size = 12; // Создаём размер барьера
+constexpr int maps_size = 12; // Создаём размер барьера
 
 object border = objects.border;
 object space = objects.space;

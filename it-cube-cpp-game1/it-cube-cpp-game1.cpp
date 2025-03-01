@@ -48,6 +48,7 @@ public:
     class Enemy {
     public:
         vector<sEnemyObject> list; // Список всех enemy в игре
+        vector<sEnemyObject> defeated; // Список всех поверженных enemy в игре
 
         int hp = 10;
         int dmg = 1;
@@ -60,21 +61,23 @@ public:
         }
 
         bool create(int map_number, int pos_x, int pos_y) {
-            int enemyID = list.size();
-            sEnemyObject enemy = { enemyID, hp, dmg, pos_x, pos_y, map_number, true }; // Создаём моба
+            static int nextID = 0; // Статический счетчик
+            sEnemyObject enemy = { nextID++, hp, dmg, pos_x, pos_y, map_number, true };
             initialization(map_number, enemy);
             return true;
         }
 
         bool remove(int id) {
-            // Не очень перспективный метод, но работающий:
-            for (int i = 0; i < list.size(); i++) {
-                if (list[i].id == id) {
-                    list.erase(list.begin() + i);
-                    break;
+            for (auto it = list.begin(); it != list.end(); ) {
+                if (it->id == id) {
+                    it = list.erase(it); // Корректное обновление итератора
+                    return true;
+                }
+                else {
+                    ++it;
                 }
             }
-            return true;
+            return false;
         }
 
         sEnemyObject getByCoord(int pos_x, int pos_y) {
@@ -82,6 +85,7 @@ public:
             for (const auto& enemy : list) {
                 if (enemy.pos_x == pos_x && enemy.pos_y == pos_y) return enemy;
             }
+            return {}; // Возвращаем пустой объект
         }
 
         sEnemyObject getById(int id) {
@@ -89,13 +93,15 @@ public:
             for (const auto& enemy : list) {
                 if (enemy.id == id) return enemy;
             }
+            return {}; // Возвращаем пустой объект
         }
 
         sEnemyObjectGet getByIdwithIndex(int id) {
             // Не очень перспективный метод, но работающий:
             for (int i = 0; i < list.size(); i++) {
-                if (list[i].id == id) return {list[i], i, true};
+                if (list[i].id == id) return { list[i], i, true };
             }
+            return { sEnemyObject{}, -1, false }; // Гарантированный возврат
         }
 
         bool move_right(int id) {
@@ -246,19 +252,21 @@ public:
 
                     int index = this->getByIdwithIndex(enemy.id).index;
                     list[index].hp = list[index].hp - player.dmg; // Убавляем мобу хп
-                    PlaySoundA(stringToLPCSTR("sound_enemy_getDmg" + to_string(random(0, 2)) + ".wav"), NULL, SND_FILENAME | SND_ASYNC);
+                    // PlaySoundA(stringToLPCSTR("sound_enemy_getDmg" + to_string(random(0, 2)) + ".wav"), NULL, SND_FILENAME | SND_ASYNC);
                     more_by_coordinate = random(0, 4); // Откидываем моба рандомно
 
                     // Убавляем игроку хп
                     player.hp = player.hp - enemy.dmg;
 
                     if (!enemy.hpHas(index, list, enemy.map_number)) {
-                        list[index].life = false;
+                        list[index].life = false; // Перезаписываем статус жизни enemy в списке
+                        enemy.life = false; // Перезаписываем статус жизни у самого enemy
+                        defeated.push_back(enemy); // Заносим enemy в список поверженных
                         Maps[game.map_number][list[index].pos_y][list[index].pos_x] = objects.space /* = " . " */; // Очищаем объект на карте
-                        PlaySoundA(stringToLPCSTR("sound_enemy_death" + to_string(random(0, 2)) + ".wav"), NULL, SND_FILENAME | SND_ASYNC);
-                        remove(enemy.id);
+                        // PlaySoundA(stringToLPCSTR("sound_enemy_death" + to_string(random(0, 2)) + ".wav"), NULL, SND_FILENAME | SND_ASYNC);
+                        // remove(enemy.id); // Крашает игру
 
-                        if (list.size() == 0) {
+                        if (list.size() == defeated.size()) { // Если повержены все возможные enemy
                             game.over.status = true; // Если противников не осталось
                             game.over.reason = messages.enemyiesDerstoyed;
                         }
@@ -343,7 +351,7 @@ void static Move(char m, int map_number, actionsOnEneies actionsOnEneies) { // �
         if ((m == 'k' || m == 'l') && game.debug.active) {
             if (m == 'k') (game.debug.pages.max != game.debug.pages.page) && game.debug.pages.page > 0 ? --game.debug.pages.page : game.debug.pages.page = 0;
             else if (m == 'l') (game.debug.pages.max != game.debug.pages.page) ? ++game.debug.pages.page : game.debug.pages.page = 0;
-            PlaySoundA(stringToLPCSTR("sound_debug" + to_string(random(0, 2)) + ".wav"), NULL, SND_FILENAME | SND_ASYNC);
+            // PlaySoundA(stringToLPCSTR("sound_debug" + to_string(random(0, 2)) + ".wav"), NULL, SND_FILENAME | SND_ASYNC);
             game.ui_update_permission = true;
         } 
 
@@ -353,7 +361,7 @@ void static Move(char m, int map_number, actionsOnEneies actionsOnEneies) { // �
             Maps[map_number][player.pos_y][player.pos_x] = objects.space /* = " . " */; // Очищаем положение игрока на исходной карте 
             map_number == size(Maps) - 1 ? game.map_number = 0 : game.map_number++; // Переключение на следующую локацию
             Maps[map_number][player.pos_y][player.pos_x] = objects.player /* = " P " */; // Спавним игрока на новой карте
-            PlaySoundA("sound_player_locationTransition.wav", NULL, SND_FILENAME | SND_ASYNC);
+            // PlaySoundA("sound_player_locationTransition.wav", NULL, SND_FILENAME | SND_ASYNC);
             game.ui_update_permission = true; // Разрешаем обновление интерфейса игры
         }
 
@@ -369,22 +377,22 @@ void static Move(char m, int map_number, actionsOnEneies actionsOnEneies) { // �
 
         else if (m == 'w' && move.forward_border && !y_true_up.nearby ) { // != " # "
             Maps[map_number][--player.pos_y][player.pos_x];
-            PlaySoundA("sound_player_move.wav", NULL, SND_FILENAME | SND_ASYNC);
+            // PlaySoundA("sound_player_move.wav", NULL, SND_FILENAME | SND_ASYNC);
             game.ui_update_permission = true; // Разрешаем обновление интерфейса игры
         }
         else if (m == 's' && move.back_border && !y_true_down.nearby) { // != " # "
             Maps[map_number][++player.pos_y][player.pos_x];
-            PlaySoundA("sound_player_move.wav", NULL, SND_FILENAME | SND_ASYNC);
+            // PlaySoundA("sound_player_move.wav", NULL, SND_FILENAME | SND_ASYNC);
             game.ui_update_permission = true; // Разрешаем обновление интерфейса игры
         }
         else if (m == 'a' && move.left_border && !x_true_left.nearby) { // != " # "
             Maps[map_number][player.pos_y][--player.pos_x];
-            PlaySoundA("sound_player_move.wav", NULL, SND_FILENAME | SND_ASYNC);
+            // PlaySoundA("sound_player_move.wav", NULL, SND_FILENAME | SND_ASYNC);
             game.ui_update_permission = true; // Разрешаем обновление интерфейса игры
         }
         else if (m == 'd' && move.right_border && !x_true_right.nearby) { // != " # "
             Maps[map_number][player.pos_y][++player.pos_x];
-            PlaySoundA("sound_player_move.wav", NULL, SND_FILENAME | SND_ASYNC);
+            // PlaySoundA("sound_player_move.wav", NULL, SND_FILENAME | SND_ASYNC);
             game.ui_update_permission = true; // Разрешаем обновление интерфейса игры
         }
 
@@ -392,10 +400,10 @@ void static Move(char m, int map_number, actionsOnEneies actionsOnEneies) { // �
 
             if (!game.debug.active) {
                 game.debug.active = true;
-                PlaySoundA("sound_debug_open.wav", NULL, SND_FILENAME | SND_ASYNC);
+                // PlaySoundA("sound_debug_open.wav", NULL, SND_FILENAME | SND_ASYNC);
             } else {
                 game.debug.active = false;
-                PlaySoundA("sound_debug_close.wav", NULL, SND_FILENAME | SND_ASYNC);
+                // PlaySoundA("sound_debug_close.wav", NULL, SND_FILENAME | SND_ASYNC);
             }
 
             game.ui_update_permission = true;
@@ -457,8 +465,14 @@ public:
     }
 
     void getAllEnemyies() {
-        for (const auto& enemy : entities.enemy.list) {
-            getEnemyInDebug(enemy, "getAll");
+        for (const auto& enemy : entities.enemy.list) { // НА БУДУЩЕЕ: БОЛЬШАЯ НАГРУЗКА НА ПАМЯТЬ - ЖЕЛАТЕЛЬНО УДАЛЯТЬ ИЗ СПИСКА ЖИВЫХ ДЛЯ ОСВОБОЖДЕНИЯ ПАМЯТИ И ОПТИМИЗАЦИИ ПЕРЕБОРА
+            if (enemy.life) getEnemyInDebug(enemy, "getAll"); // Выводим только живых enemy 
+        }
+    }
+
+    void getAllDefeatedEnemyies() {
+        for (const auto& enemy : entities.enemy.defeated) {
+            getEnemyInDebug(enemy, "getDefeated");
         }
     }
 };
@@ -477,13 +491,14 @@ void static UI_Update(int map_number, actionsOnEneies actionsOnEneies) { // Фу
         ChecksOnMove move;
         Debug debug;
 
-        game.debug.pages.max = 4;
+        game.debug.pages.max = 5;
         cout << "DEBUG PAGE #" << game.debug.pages.page << endl;
         if (game.debug.pages.page == 0) debug.getGameInfo(game, map_number);
         else if (game.debug.pages.page == 1) debug.getPlayerInfo(player, map_number);
         else if (game.debug.pages.page == 2) debug.getEnvironmentInfo(player, map_number);
         else if (game.debug.pages.page == 3) debug.getAvailableMovements(actionsOnEneies.x_true, actionsOnEneies.y_true, actionsOnEneies.x_true_left.nearby, actionsOnEneies.x_true_right.nearby, actionsOnEneies.y_true_up.nearby, actionsOnEneies.y_true_down.nearby);
         else if (game.debug.pages.page == 4) debug.getAllEnemyies();
+        else if (game.debug.pages.page == 5) debug.getAllDefeatedEnemyies();
     }
     else {
         // Cброс заголовка терминала для Windows
@@ -557,23 +572,24 @@ int main() { // Главная функция
     setWindowsConsoleTitle(title);
 
     // Выводим интрфейс приветствия
-    PlaySoundA(stringToLPCSTR("sound_start_hello" + to_string(random(0, 2)) + ".wav"), NULL, SND_FILENAME | SND_ASYNC);
+    // PlaySoundA(stringToLPCSTR("sound_start_hello" + to_string(random(0, 2)) + ".wav"), NULL, SND_FILENAME | SND_ASYNC);
     UI_Hello(title, game.version, game.author, game.git);
     system("cls");
 
     // Добавляем персонажу имя/название
-    PlaySoundA("sound_start_getData.wav", NULL, SND_FILENAME | SND_ASYNC); // пасхалка
+    // PlaySoundA("sound_start_getData.wav", NULL, SND_FILENAME | SND_ASYNC); // пасхалка
     string name = getUserData().name;
     player.name = name;
 
     if (player.name == "gloomyman") {
-        PlaySoundA("sound_bruh.wav", NULL, SND_FILENAME | SND_ASYNC); // пасхалка
+        // PlaySoundA("sound_bruh.wav", NULL, SND_FILENAME | SND_ASYNC); // пасхалка
         objects.player.designation = " K ";
     }
     
     
     entities.enemy.create(0, 6, 8);
     entities.enemy.create(0, 3, 7);
+    entities.enemy.create(0, 7, 2);
     game.map_number = 0; // При запуске игры устанавливаем первую (нулевую в программе) карту
     while (!game.over.status) { // Запускаем бесконечный цикл, чтобы программа не останавливалась, если произведётся действие
 
@@ -629,10 +645,10 @@ int main() { // Главная функция
 
     //Если игра закончена, то выводим интерфейс об окончании игры
     if (entities.enemy.list.size() == 0) game.finished = true;
-    if (player.name == "gloomyman") PlaySoundA("music_end_gloomyman.wav", NULL, SND_FILENAME | SND_ASYNC); // пасхалка
+    // if (player.name == "gloomyman") "music_end_gloomyman.wav", NULL, SND_FILENAME | SND_ASYNC); // пасхалка
     else {
-        if (!game.finished) PlaySoundA("sound_end_over.wav", NULL, SND_FILENAME | SND_ASYNC);
-        else PlaySoundA("sound_end_finished.wav", NULL, SND_FILENAME | SND_ASYNC);
+       // if (!game.finished) PlaySoundA("sound_end_over.wav", NULL, SND_FILENAME | SND_ASYNC);
+       // else PlaySoundA("sound_end_finished.wav", NULL, SND_FILENAME | SND_ASYNC);
     }
     UI_Bye(game.finished, game.over.reason);
 }

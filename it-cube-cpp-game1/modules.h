@@ -29,7 +29,7 @@ class Game {
     };
 
 public:
-    const string version = "0.1.3";
+    const string version = "0.1.4";
     const string name = "@it_cube_cpp_game1";
     const string author = "MasterCont";
     const string git = "https://github.com/MasterCont/it-cube-cpp-game1.git";
