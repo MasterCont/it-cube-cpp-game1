@@ -1,6 +1,7 @@
 # <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/cplusplus/cplusplus-original.svg" alt="C++" width="40" height="40"/> Консольная игра на C++
 
 [![Version](https://img.shields.io/badge/version-0.1.4-blue)](https://github.com/MasterCont/it-cube-cpp-game1/releases)
+[![Pre Realise](https://img.shields.io/badge/pre_release-0.2.0-orange)](https://github.com/MasterCont/it-cube-cpp-game1/releases/tag/Pre_Release_0.2.0)
 [![License](https://img.shields.io/badge/license-GPLv3-blue)](https://www.gnu.org/licenses/gpl-3.0)
 [![Windows](https://img.shields.io/badge/platform-Windows-0078d7)](https://www.microsoft.com/ru-ru/windows)
 [![Download EXE](https://img.shields.io/badge/Скачать_EXE-релизы-success)](https://github.com/MasterCont/it-cube-cpp-game1/releases)
@@ -59,6 +60,16 @@ cd it-cube-cpp-game1
 cmake -B build
 cmake --build build --config Release
 ```
+
+---
+
+## 🎮 Новые возможности 0.2.0 (в разработке)
+- 🖼️ **Графический интерфейс** на базе SFML
+- 🎥 **Умная камера** с плавным следованием
+- 🗺️ **Оптимизированная отрисовка** игровых объектов
+- 🛠️ **Система логов** для отладки
+
+---
 
 ## 📜 Лицензия
 
