@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <maps.h>
 #include <player.h>
+#include <cam.h>
 
 int main(){
     
@@ -22,12 +23,12 @@ int main(){
     // Создаём окно игры с размерами из настроек
     sf::RenderWindow window(sf::VideoMode(game.window.width, game.window.height), game.name, sf::Style::Default);
 
+    // Создание камеры
+    Cam cam;
+    cam.initialize(window);
+
+
     window.setVerticalSyncEnabled(true);
-
-    /*sf::CircleShape shape(100.f, 3);
-    shape.setPosition(100, 100);
-    shape.setFillColor(sf::Color::Magenta);*/
-
 
     while (window.isOpen())
     {
@@ -38,7 +39,13 @@ int main(){
                 window.close();
         }
 
+        // Обновление позиции игрока
         player.update();
+
+        // Обновление камеры
+        cam.update(player.object.shape.getPosition());
+        window.setView(cam.getView());
+
 
         // Отрисовка объектов на карте
         window.clear(sf::Color(30, 30, 30));

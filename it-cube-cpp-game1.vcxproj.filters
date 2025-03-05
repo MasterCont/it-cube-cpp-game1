@@ -39,21 +39,27 @@
     <ClCompile Include="terminal.cpp">
       <Filter>Исходные файлы\modules</Filter>
     </ClCompile>
+    <ClCompile Include="cam.cpp">
+      <Filter>Исходные файлы\modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="libraries\include\common.h">
+    <ClInclude Include="cam.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\maps.h">
+    <ClInclude Include="common.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\objects.h">
+    <ClInclude Include="maps.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\player.h">
+    <ClInclude Include="objects.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\terminal.h">
+    <ClInclude Include="player.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="terminal.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
