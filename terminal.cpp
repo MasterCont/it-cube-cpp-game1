@@ -1,0 +1,23 @@
+#include <iostream>
+#include "terminal.h"
+#include <chrono>
+#include <ctime>
+
+void sysPrint(std::string value) {
+
+    // Получаем текущее время
+    auto now = std::chrono::system_clock::now();
+    std::time_t now_time = std::chrono::system_clock::to_time_t(now);
+
+    // Используем localtime_s вместо localtime
+    std::tm local_time;
+    localtime_s(&local_time, &now_time);
+
+    // Форматируем дату и время
+    char date_buffer[11], time_buffer[9];
+    std::strftime(date_buffer, sizeof(date_buffer), "%d.%m.%Y", &local_time);
+    std::strftime(time_buffer, sizeof(time_buffer), "%H:%M:%S", &local_time);
+
+    // Выводим в консоль
+    std::cout << "[" << date_buffer << "] [" << time_buffer << "] [System] " << value << std::endl;
+}
