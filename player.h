@@ -2,12 +2,13 @@
 #include <string>
 #include <objects.h>
 #include <terminal.h>
+#include <collision.h>
 
-#pragma once
 class Player{
 
 	std::string default_name = "@player_name";
 	std::string default_className = "@player_class_name";
+	Collision collision;
 
 public:
 	std::string name = this->default_name;
@@ -25,12 +26,21 @@ public:
 		return object;
 	}
 
-	void update() {
+	void update(int mapWidth, int mapHeight, bool log = false) {
 		// ”правление игроком
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) object.move(0, -1);
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) object.move(0, 1);
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) object.move(-1, 0);
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) object.move(1, 0);
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+			if (collision.border('W', object.size, object.position, mapWidth, mapHeight)) object.move(0, -1, log);
+		} 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+			if (collision.border('S', object.size, object.position, mapWidth, mapHeight)) object.move(0, 1, log);
+		} 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+			if (collision.border('A', object.size, object.position, mapWidth, mapHeight)) object.move(-1, 0, log);
+		} 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			if (collision.border('D', object.size, object.position, mapWidth, mapHeight)) object.move(1, 0, log);
+		} 
 	}
 };
 

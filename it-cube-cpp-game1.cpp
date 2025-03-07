@@ -17,6 +17,9 @@ int main(){
 
     // Создание игрока
     Player player;
+    int spawnWidth = (mapManager.maps[0].size.width / 2) - (player.object.size / 2);
+    int spawnHeight = (mapManager.maps[0].size.height / 2) - (player.object.size / 2);
+    player.object.SetPosition(spawnWidth, spawnHeight); // Спавним игрока в центер карты
     player.initialize();
    
 
@@ -40,7 +43,7 @@ int main(){
         }
 
         // Обновление позиции игрока
-        player.update();
+        player.update(mapManager.maps[0].size.width, mapManager.maps[0].size.height, true);
 
         // Обновление камеры
         cam.update(player.object.shape.getPosition());
@@ -52,7 +55,7 @@ int main(){
 
         // Объекты карты
         for (const auto& obj : mapManager.maps[0].level) {
-            sf::CircleShape shape(8);
+            sf::RectangleShape shape = mapManager.maps[0].level[0].shape;
             shape.setPosition(obj.position);
             shape.setFillColor(obj.color);
             window.draw(shape);

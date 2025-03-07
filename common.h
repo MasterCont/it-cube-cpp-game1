@@ -2,13 +2,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include <iostream>
-
-// ¬нешний класс дл€ глобальных параметров окна
-class GlobalWindow {
-public:
-    const int width = 976;
-    const int height = 480;
-};
+#include <sstream>
 
 //  ласс common с настройками игры
 class common{
@@ -49,8 +43,15 @@ public:
     bool hello_ui = true;
     bool finished = false;
 
+    class MapDefaultSize {
+    public:
+        const int width = 1024;
+        const int height = 512;
+    };
+
     // ќбъ€влени€ локальных переменных настроек игры
     Window window;
+    MapDefaultSize mapDefaultSize;
 };
 
 // ќбъ€влени€ глобальных переменных
