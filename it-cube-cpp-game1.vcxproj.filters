@@ -19,6 +19,15 @@
     <Filter Include="Исходные файлы\maps">
       <UniqueIdentifier>{d3e5b799-e7a5-42d3-830b-3894d6b7a429}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Исходные файлы\assets">
+      <UniqueIdentifier>{5d845994-99b2-4324-ae9d-8566a99522bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\assets\textures">
+      <UniqueIdentifier>{25754e46-334f-4736-bff1-77e0510f59ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\assets\fonts">
+      <UniqueIdentifier>{541eaadf-a863-4958-8638-dbdd672fdfec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="it-cube-cpp-game1.cpp">
@@ -45,6 +54,12 @@
     <ClCompile Include="collision.cpp">
       <Filter>Исходные файлы\modules</Filter>
     </ClCompile>
+    <ClCompile Include="debug.cpp">
+      <Filter>Исходные файлы\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="fonts.cpp">
+      <Filter>Исходные файлы\modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cam.h">
@@ -68,5 +83,16 @@
     <ClInclude Include="collision.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="fonts.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\textures\grass.png">
+      <Filter>Исходные файлы\assets\textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

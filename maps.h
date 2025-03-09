@@ -33,6 +33,13 @@ public:
 		MapObject border;
 		border.shape.setSize(sf::Vector2f(width, height)); // Размер игрока
 		border.shape.setOutlineThickness(1);
+		//sf::Image image;
+		//image.loadFromFile("grass.png");
+		//sf::Texture* texture = nullptr;
+		//// Getting Error here!
+		//if (!texture->loadFromImage(image))
+		//	throw std::runtime_error("Could not load fighter jet.png");
+		//border.shape.setTexture(texture);
 		border.shape.setOutlineColor(sf::Color::Red);
 		map.level.push_back(border);
 

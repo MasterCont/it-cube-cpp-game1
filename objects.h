@@ -41,13 +41,18 @@ struct PlayerObject {
 		position.x += dx * speed;
 		position.y += dy * speed;
 		if (log) {
-			sysPrintWithoutEndl("Player pos X: ");
+			sysPrintWithoutEndl("Player pos X: ", true);
 			sysPrint(position.x, false);
 
 
-			sysPrintWithoutEndl("Player pos Y: ");
+			sysPrintWithoutEndl("Player pos Y: ", true);
 			sysPrint(position.y, false);
 		}
 		shape.setPosition(position);
 	}
+};
+
+struct DebugPages {
+	std::string header;
+	std::vector<std::string> list;
 };

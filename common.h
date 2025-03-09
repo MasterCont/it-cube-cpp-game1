@@ -14,6 +14,7 @@ class common{
             int max;
         };
 
+        int fontSize = 14;
         bool active = false;
         Pages pages;
     };
@@ -28,6 +29,8 @@ class common{
     public:
         const int width = 976;
         const int height = 480;
+        const std::string widthString = std::to_string(width);
+        const std::string heightString = std::to_string(height);
     };
 
 public:
