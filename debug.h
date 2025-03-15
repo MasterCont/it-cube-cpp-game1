@@ -5,6 +5,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include <fonts.h>
+#include <player.h>
 
 class Debug{
 	Fonts fonts;
@@ -32,17 +33,35 @@ public:
 		//sysPrintWithoutEndl(" has been overwritten. \n");
 	}
 
-	void update() {
+
+	void update(Player player, int page) {
+
+		std::vector<std::string> list;
 
 		if (game.debug.active) {
-			std::vector<std::string> list;
-			list.push_back("Version: " + game.version);
-			list.push_back("Window.Witdh: " + game.window.widthString);
-			list.push_back("Window.Height: " + game.window.heightString);
-			list.push_back("Map: " + std::to_string(game.map_number));
+			if (page == 0) {
+				list.clear();
+				list.push_back("Version: " + game.version);
+				list.push_back("Window.Witdh: " + game.window.widthString);
+				list.push_back("Window.Height: " + game.window.heightString);
+				list.push_back("Map: " + std::to_string(game.map_number));
 
-			updatePage(0, "DEBUG PAGE #0", list);
+				updatePage(0, "DEBUG PAGE #0", list);
+			}
+
+			else if (page == 1) {
+				list.clear();
+				list.push_back("Player posX: " + std::to_string(player.object.position.x));
+				list.push_back("Player posY: " + std::to_string(player.object.position.y));
+				list.push_back("Player HP: " + std::to_string(player.hp));
+				list.push_back("Player Life: " + std::to_string(player.life));
+
+				updatePage(1, "DEBUG PAGE #1", list);
+			}
 		}
+
+		// Очистка памяти при выключении отладки
+		else if (list.size() > 0) list.clear();
 	}
 
 	sf::Text outputText(std::string value, int posX, int posY) {

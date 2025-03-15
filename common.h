@@ -10,7 +10,7 @@ class common{
     struct Debug {
 
         struct Pages {
-            int page;
+            int page = 0;
             int max;
         };
 

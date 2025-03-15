@@ -10,6 +10,10 @@
 
 int main(){
 
+    // Установка переменных
+    game.debug.pages.max = 1;
+    game.debug.pages.page = 0;
+
     // Оповещение о загрузке
     sysPrint("The application is running.");
 
@@ -51,7 +55,16 @@ int main(){
 
             // Считываем нажания клавиш
             if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::I) Debug::toggle(window); // Вызов отладки
+
+                if (!Terminal::release) { // Если программа запущена в режиме debug
+                    if (event.key.code == sf::Keyboard::I) Debug::toggle(window); // Вызов отладки
+                }
+
+                if (event.key.code == sf::Keyboard::Num0) window.close(); // Закрытие приожения
+                if (game.debug.active) {
+                    if (event.key.code == sf::Keyboard::L) game.debug.pages.max > game.debug.pages.page ? ++game.debug.pages.page : game.debug.pages.page = 0;
+                    else if (event.key.code == sf::Keyboard::K) game.debug.pages.page > 0 ? --game.debug.pages.page : game.debug.pages.page = game.debug.pages.max;
+                }
             }
 
 
@@ -60,7 +73,7 @@ int main(){
 
 
         // Обновление позиции игрока
-        player.update(mapManager.maps[0].size.width, mapManager.maps[0].size.height, true);
+        player.update(mapManager.maps[0].size.width, mapManager.maps[0].size.height);
 
         // Обновление камеры
         cam.update(player.object.shape.getPosition());
@@ -80,14 +93,14 @@ int main(){
 
         // Отрисовка отладки
         Debug debug;
-        debug.update();
+        debug.update(player, game.debug.pages.page);
 
         // Игрок
         window.draw(player.object.shape);
 
         int posX = cam.getView().getCenter().x - game.window.width / 2;
         int posY = cam.getView().getCenter().y - game.window.height / 2;
-        if (game.debug.active) debug.render(window, posX, posY);
+        if (game.debug.active) debug.render(window, posX, posY, game.debug.pages.page);
 
 
         window.display();
