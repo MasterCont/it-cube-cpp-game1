@@ -23,6 +23,7 @@ public:
 	// Инициализация игрока
 	PlayerObject initialize(std::string name = "@player_name") {
 		sysPrint("The player's essence has been created.");
+		life = true;
 		return object;
 	}
 

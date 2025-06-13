@@ -89,10 +89,21 @@
     <ClInclude Include="fonts.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="clock.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\grass.png">
       <Filter>Исходные файлы\assets\textures</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="assets\fonts\arial_bolditalicmt.ttf">
+      <Filter>Исходные файлы\assets\fonts</Filter>
+    </Font>
+    <Font Include="assets\fonts\arialmt.ttf">
+      <Filter>Исходные файлы\assets\fonts</Filter>
+    </Font>
   </ItemGroup>
 </Project>

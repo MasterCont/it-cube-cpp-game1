@@ -3,6 +3,7 @@
 #include <objects.h>
 #include <common.h>
 #include <terminal.h>
+#include <string>
 
 class MapManager {
 public:
@@ -21,16 +22,8 @@ public:
 		map.size.width = width;
 		map.size.height = height;
 
-		// Добавляем тестовые объекты на карту
-		//for (int i = 0; i < 100; ++i) {
-		//	MapObject obj;
-		//	obj.position = sf::Vector2f(rand() % game.window.width, rand() % game.window.height);
-		//	obj.color = sf::Color(rand() % 255, rand() % 255, rand() % 255); // Случайный цвет
-		//	map.level.push_back(obj);
-		//}
-
 		// Отрисовываем доступную местность карты
-		MapObject border;
+		MapObjectBasicShape border;
 		border.shape.setSize(sf::Vector2f(width, height)); // Размер игрока
 		border.shape.setOutlineThickness(1);
 		//sf::Image image;
@@ -41,16 +34,21 @@ public:
 		//	throw std::runtime_error("Could not load fighter jet.png");
 		//border.shape.setTexture(texture);
 		border.shape.setOutlineColor(sf::Color::Red);
-		map.level.push_back(border);
+		map.level.shapes.push_back(border);
 
-		sysPrint("The map '" + name + "' has been uploaded successfully!");
+		sysPrint("The map '" + name + "' has been created successfully!");
 		return map;
 	}
 
 	// Загрузить все карты
 	void loadAllMaps() {
 		this->maps.push_back(create("default", game.mapDefaultSize.width, game.mapDefaultSize.height));
+		sysPrint("There were "+ std::to_string(maps.size()) + " game locations uploaded.");
 	}
 
+	// Загрузка нового объекта-спрайта на карту
+	void loadSprite(int mapNumber, MapObjectBasicSprite sprite) {
+		maps[mapNumber].level.sprites.push_back(sprite);
+	}
 
 };

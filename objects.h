@@ -3,10 +3,14 @@
 #include <vector>
 #include <terminal.h>
 
-struct MapObject{
+struct MapObjectBasicShape{
 	sf::RectangleShape shape;
 	sf::Vector2f position;
 	sf::Color color;
+};
+
+struct MapObjectBasicSprite{
+	sf::Sprite sprite;
 };
 
 struct MapSize {
@@ -15,9 +19,15 @@ struct MapSize {
 };
 
 struct GameMap {
+
+	struct ObjectList {
+		std::vector<MapObjectBasicShape> shapes;
+		std::vector<MapObjectBasicSprite> sprites;
+	};
+
 	std::string name;
 	MapSize size;
-	std::vector<MapObject> level;
+	ObjectList level;
 };
 
 struct PlayerObject {
@@ -44,7 +54,6 @@ struct PlayerObject {
 			sysPrintWithoutEndl("Player pos X: ", true);
 			sysPrint(position.x, false);
 
-
 			sysPrintWithoutEndl("Player pos Y: ", true);
 			sysPrint(position.y, false);
 		}
@@ -55,4 +64,27 @@ struct PlayerObject {
 struct DebugPages {
 	std::string header;
 	std::vector<std::string> list;
+};
+
+// Класс по управлению всеми объектами в игре на определённой игровой карте
+class ObjectManager {
+public:
+
+	// Спрайт с цветом
+	MapObjectBasicSprite createSprite(sf::Vector2f position, sf::Color color) {
+		MapObjectBasicSprite newObject;
+		newObject.sprite.setPosition(position);
+		newObject.sprite.setColor(color);
+		return newObject;
+	}
+
+	// Спрайт с текстурой
+	MapObjectBasicSprite createSprite(sf::Vector2f position, sf::Texture& texture) {
+		MapObjectBasicSprite newObject;
+		newObject.sprite.setPosition(position);
+		newObject.sprite.setTexture(texture);
+		return newObject;
+	}
+
+
 };

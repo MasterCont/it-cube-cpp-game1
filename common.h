@@ -10,13 +10,21 @@ class common{
     struct Debug {
 
         struct Pages {
-            int page;
-            int max;
+            int page = 0;
+            static constexpr int max = 5;
+            bool looging = true;
         };
 
         int fontSize = 14;
         bool active = false;
         Pages pages;
+
+        // «апущено ли приложение в режиме отладки
+        #if defined(DEBUG) || defined(_DEBUG) 
+                static const bool release = 0;
+        #else
+                static const bool release = 1;
+        #endif
     };
 
     struct Over {
