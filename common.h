@@ -39,6 +39,7 @@ class common{
         const int height = 480;
         const std::string widthString = std::to_string(width);
         const std::string heightString = std::to_string(height);
+        bool focus = true;
     };
 
 public:

@@ -23,9 +23,10 @@ public:
 		map.size.height = height;
 
 		// Отрисовываем доступную местность карты
-		MapObjectBasicShape border;
-		border.shape.setSize(sf::Vector2f(width, height)); // Размер игрока
-		border.shape.setOutlineThickness(1);
+		MapObjectBasicSprite location;
+		location.sprite.setScale(width, height);
+		// location.sprite.setSize(sf::Vector2f(width, height)); // Размер игрока
+		// location.sprite.setOutlineThickness(1);
 		//sf::Image image;
 		//image.loadFromFile("grass.png");
 		//sf::Texture* texture = nullptr;
@@ -33,8 +34,8 @@ public:
 		//if (!texture->loadFromImage(image))
 		//	throw std::runtime_error("Could not load fighter jet.png");
 		//border.shape.setTexture(texture);
-		border.shape.setOutlineColor(sf::Color::Red);
-		map.level.shapes.push_back(border);
+		// location.sprite.setOutlineColor(sf::Color::Red);
+		map.level.sprites.push_back(location);
 
 		sysPrint("The map '" + name + "' has been created successfully!");
 		return map;
@@ -48,6 +49,7 @@ public:
 
 	// Загрузка нового объекта-спрайта на карту
 	void loadSprite(int mapNumber, MapObjectBasicSprite sprite) {
+		sprite.sprite.setColor(sf::Color::Green);
 		maps[mapNumber].level.sprites.push_back(sprite);
 	}
 

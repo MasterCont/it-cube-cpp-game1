@@ -60,6 +60,9 @@
     <ClCompile Include="fonts.cpp">
       <Filter>Исходные файлы\modules</Filter>
     </ClCompile>
+    <ClCompile Include="core.cpp">
+      <Filter>Исходные файлы\modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cam.h">
@@ -90,6 +93,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="clock.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="core.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
